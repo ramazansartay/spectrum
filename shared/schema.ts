@@ -26,6 +26,7 @@ export const listings = pgTable("listings", {
   location: text("location").notNull(),
   contactInfo: text("contact_info"),
   images: text("images").array(),
+  isNegotiable: boolean("is_negotiable").default(false),
   userId: varchar("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
   categoryId: integer("category_id").notNull().references(() => categories.id),
   createdAt: timestamp("created_at").defaultNow(),

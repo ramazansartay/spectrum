@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { Server } from "http";
 import { api } from "@shared/routes";
 import { authMiddleware } from "./middleware/auth";
+import { upload } from "./storage";
 
 import * as auth from "./controllers/auth";
 import * as listings from "./controllers/listings";
@@ -21,7 +22,7 @@ export async function registerRoutes(
   // Listings
   app.get(api.listings.list.path, listings.list);
   app.get(api.listings.get.path, listings.get);
-  app.post(api.listings.create.path, authMiddleware, listings.create);
+  app.post(api.listings.create.path, authMiddleware, upload.array('images', 5), listings.create);
   app.put(api.listings.update.path, authMiddleware, listings.update);
   app.delete(api.listings.delete.path, authMiddleware, listings.delete);
 
