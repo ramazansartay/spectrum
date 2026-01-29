@@ -10,11 +10,15 @@ import CreateListing from "@/pages/CreateListing";
 import Profile from "@/pages/Profile";
 import Chat from "@/pages/Chat";
 import ListingDetails from "@/pages/ListingDetails";
+import LoginPage from "@/pages/Login"; // Import Login page
+import RegisterPage from "@/pages/Register"; // Import Register page
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
+      <Route path="/login" component={LoginPage} />
+      <Route path="/register" component={RegisterPage} />
       <Route path="/search" component={SearchPage} />
       <Route path="/create" component={CreateListing} />
       <Route path="/profile" component={Profile} />

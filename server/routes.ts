@@ -1,65 +1,44 @@
 import type { Express } from "express";
-import { createServer, type Server } from "http";
-import { storage } from "./storage";
+import { Server } from "http";
 import { api } from "@shared/routes";
-import { z } from "zod";
+import { authMiddleware } from "./middleware/auth";
+
+import * as auth from "./controllers/auth";
+import * as listings from "./controllers/listings";
+import * as categories from "./controllers/categories";
+import * as users from "./controllers/users";
+import * as chats from "./controllers/chats";
 
 export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
 
-  app.get(api.listings.list.path, async (req, res) => {
-    const filters = {
-      search: req.query.search as string,
-      category: req.query.category as string,
-      city: req.query.city as string,
-      sort: req.query.sort as string,
-      minPrice: req.query.minPrice ? Number(req.query.minPrice) : undefined,
-      maxPrice: req.query.maxPrice ? Number(req.query.maxPrice) : undefined,
-    };
-    const listings = await storage.getListings(filters);
-    res.json(listings);
-  });
+  // Auth
+  app.post(api.auth.register.path, auth.register);
+  app.post(api.auth.login.path, auth.login);
 
-  app.get(api.listings.get.path, async (req, res) => {
-    const listing = await storage.getListing(Number(req.params.id));
-    if (!listing) return res.status(404).json({ message: "Listing not found" });
-    res.json(listing);
-  });
+  // Listings
+  app.get(api.listings.list.path, listings.list);
+  app.get(api.listings.get.path, listings.get);
+  app.post(api.listings.create.path, authMiddleware, listings.create);
+  app.put(api.listings.update.path, authMiddleware, listings.update);
+  app.delete(api.listings.delete.path, authMiddleware, listings.delete);
 
-  app.post(api.listings.create.path, async (req, res) => {
-    const userId = "mock-user-id";
-    
-    try {
-      const input = api.listings.create.input.parse(req.body);
-      const listing = await storage.createListing({
-        ...input,
-        userId: userId
-      });
-      res.status(201).json(listing);
-    } catch (e) {
-      if (e instanceof z.ZodError) {
-        return res.status(400).json({ message: e.errors[0].message });
-      }
-      res.status(400).json({ message: "Validation error" });
-    }
-  });
+  // Categories
+  app.get(api.categories.list.path, categories.list);
 
-  app.get(api.users.me.path, async (req, res) => {
-    const dbUser = await storage.getUser("mock-user-id");
-    res.json(dbUser || null);
-  });
+  // Users
+  app.get(api.users.me.path, authMiddleware, users.me);
+  app.get(api.users.get.path, users.get);
+  app.put(api.users.update.path, authMiddleware, users.update);
 
-  app.put(api.users.update.path, async (req, res) => {
-    try {
-      const input = api.users.update.input.parse(req.body);
-      const updated = await storage.updateUser("mock-user-id", input);
-      res.json(updated);
-    } catch (e) {
-      res.status(400).json({ message: "Update failed" });
-    }
-  });
+  // Chats
+  app.get(api.chats.list.path, authMiddleware, chats.list);
+  app.post(api.chats.create.path, authMiddleware, chats.create);
+  app.get(api.chats.get.path, authMiddleware, chats.get);
+  app.get(api.chats.messages.path, authMiddleware, chats.messages);
+  app.post(api.chats.sendMessage.path, authMiddleware, chats.sendMessage);
 
   return httpServer;
 }

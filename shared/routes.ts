@@ -1,69 +1,101 @@
-import { z } from 'zod';
-import { insertListingSchema, listings, users, insertUserSchema } from './schema';
+import { z } from "zod";
 
-export const api = {
+const a = <T extends z.ZodRawShape>(o: T) => o;
+
+const schemas = a({
   listings: {
     list: {
-      method: 'GET' as const,
-      path: '/api/listings',
+      path: "/api/listings",
       input: z.object({
         search: z.string().optional(),
         category: z.string().optional(),
-        city: z.string().optional(),
-        sort: z.enum(['recent', 'price-asc', 'price-desc', 'popular']).optional(),
-        minPrice: z.coerce.number().optional(),
-        maxPrice: z.coerce.number().optional(),
-      }).optional(),
-      responses: {
-        200: z.array(z.custom<typeof listings.$inferSelect>()),
-      },
+        location: z.string().optional(),
+        sort: z.string().optional(),
+        minPrice: z.number().optional(),
+        maxPrice: z.number().optional(),
+      }),
     },
     get: {
-      method: 'GET' as const,
-      path: '/api/listings/:id',
-      responses: {
-        200: z.custom<typeof listings.$inferSelect>(),
-        404: z.object({ message: z.string() }),
-      },
+      path: "/api/listings/:id",
     },
     create: {
-      method: 'POST' as const,
-      path: '/api/listings',
-      input: insertListingSchema,
-      responses: {
-        201: z.custom<typeof listings.$inferSelect>(),
-        401: z.object({ message: z.string() }),
-      },
+      path: "/api/listings",
+      input: z.object({
+        title: z.string(),
+        description: z.string(),
+        price: z.string(),
+        location: z.string(),
+        categoryId: z.number(),
+        images: z.array(z.string()),
+      }),
     },
+    update: {
+      path: "/api/listings/:id",
+    },
+    delete: {
+      path: "/api/listings/:id",
+    }
+  },
+  categories: {
+    list: {
+      path: "/api/categories",
+    },
+  },
+  auth: {
+    register: {
+      path: "/api/auth/register",
+      input: z.object({
+        email: z.string().email(),
+        password: z.string(),
+        name: z.string(),
+      })
+    },
+    login: {
+      path: "/api/auth/login",
+      input: z.object({
+        email: z.string().email(),
+        password: z.string(),
+      })
+    }
   },
   users: {
     me: {
-      method: 'GET' as const,
-      path: '/api/user',
-      responses: {
-        200: z.custom<typeof users.$inferSelect>().nullable(),
-      },
+      path: "/api/users/me",
+    },
+    get: {
+      path: "/api/users/:id",
     },
     update: {
-      method: 'PUT' as const,
-      path: '/api/user',
-      input: insertUserSchema.partial(),
-      responses: {
-        200: z.custom<typeof users.$inferSelect>(),
-        401: z.object({ message: z.string() }),
-      },
-    },
+      path: "/api/users/me",
+      input: z.object({
+        name: z.string().optional(),
+        email: z.string().email().optional(),
+      })
+    }
   },
-};
-
-export function buildUrl(path: string, params?: Record<string, string | number>): string {
-  let url = path;
-  if (params) {
-    Object.entries(params).forEach(([key, value]) => {
-      if (url.includes(`:${key}`)) {
-        url = url.replace(`:${key}`, String(value));
-      }
-    });
+  chats: {
+    list: {
+      path: "/api/chats",
+    },
+    create: {
+      path: "/api/chats",
+      input: z.object({
+        listingId: z.number(),
+      }),
+    },
+    get: {
+      path: "/api/chats/:id",
+    },
+    messages: {
+      path: "/api/chats/:id/messages",
+    },
+    sendMessage: {
+      path: "/api/chats/:id/messages",
+      input: z.object({
+        content: z.string(),
+      })
+    }
   }
-  return url;
-}
+});
+
+export { schemas as api };
