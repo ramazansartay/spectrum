@@ -17,5 +17,5 @@
     "jsx": "preserve"
   },
   "include": ["server/**/*", "shared/**/*"],
-  "exclude": ["node_modules", "build", "dist", "**/*.test.ts", "client"]
+  "exclude": ["node_modules", "build", "dist", "**/*.test.ts", "client", "vite.config.ts"]
 }
