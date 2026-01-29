@@ -4,8 +4,8 @@ import colors from "tailwindcss/colors";
 export default {
   darkMode: ["class"],
   content: [
-    "./client/index.html",
-    "./client/src/**/*.{js,jsx,ts,tsx,css}",
+    "./index.html",
+    "./src/**/*.{js,jsx,ts,tsx,css}",
   ],
   theme: {
     extend: {
