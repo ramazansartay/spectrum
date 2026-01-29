@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { Search, Zap, Move, Box, Disc, Radio, Link as LinkIcon, Wrench, Package, Cpu } from "lucide-react";
@@ -6,28 +7,28 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { CategoryCard } from "@/components/CategoryCard";
 import { ListingCard } from "@/components/ListingCard";
-import { useListings, useCategories } from "@/hooks/api"; // Updated import
+import { useListings, useCategories } from "@/hooks/api";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Category } from "@shared/schema";
+import { useTranslation } from "react-i18next";
 
-// Map category names to icons and colors
 const categoryStyleMap: { [key: string]: { icon: React.ElementType, color: string } } = {
-  "Hubs & Electronics": { icon: Zap, color: "bg-amber-50 text-amber-600" },
-  "Motors": { icon: Cpu, color: "bg-red-50 text-red-600" },
-  "Servos": { icon: Move, color: "bg-blue-50 text-blue-600" },
-  "Structure": { icon: Box, color: "bg-slate-50 text-slate-600" },
-  "Wheels": { icon: Disc, color: "bg-emerald-50 text-emerald-600" },
-  "Sensors": { icon: Radio, color: "bg-purple-50 text-purple-600" },
-  "Wires": { icon: LinkIcon, color: "bg-pink-50 text-pink-600" },
-  "Tools": { icon: Wrench, color: "bg-orange-50 text-orange-600" },
-  "Kits": { icon: Package, color: "bg-teal-50 text-teal-600" },
+  "hubsAndElectronics": { icon: Zap, color: "bg-amber-50 text-amber-600" },
+  "motors": { icon: Cpu, color: "bg-red-50 text-red-600" },
+  "servos": { icon: Move, color: "bg-blue-50 text-blue-600" },
+  "structure": { icon: Box, color: "bg-slate-50 text-slate-600" },
+  "wheels": { icon: Disc, color: "bg-emerald-50 text-emerald-600" },
+  "sensors": { icon: Radio, color: "bg-purple-50 text-purple-600" },
+  "wires": { icon: LinkIcon, color: "bg-pink-50 text-pink-600" },
+  "tools": { icon: Wrench, color: "bg-orange-50 text-orange-600" },
+  "kits": { icon: Package, color: "bg-teal-50 text-teal-600" },
 };
 
-
 export default function Home() {
+  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState("");
   const [, setLocation] = useLocation();
-  const { data: listings, isLoading: listingsLoading } = useListings({}); // Pass empty filter object
+  const { data: listings, isLoading: listingsLoading } = useListings({});
   const { data: categories, isLoading: categoriesLoading } = useCategories();
 
   const handleSearch = (e: React.FormEvent) => {
@@ -36,9 +37,9 @@ export default function Home() {
   };
 
   const getCategoryStyle = (categoryName: string) => {
-    return categoryStyleMap[categoryName] || { icon: Package, color: "bg-gray-100 text-gray-600" };
+    const key = categoryName.replace(/ & /g, "And").replace(/ /g, "").charAt(0).toLowerCase() + categoryName.slice(1).replace(/ & /g, "And").replace(/ /g, "");
+    return categoryStyleMap[key] || { icon: Package, color: "bg-gray-100 text-gray-600" };
   };
-
 
   return (
     <div className="min-h-screen bg-[#f6f9fb]">
@@ -61,14 +62,14 @@ export default function Home() {
                 <CategoryCard 
                 key={cat.id}
                 icon={getCategoryStyle(cat.name).icon}
-                label={cat.name}
+                label={t(cat.name.replace(/ & /g, "And").replace(/ /g, "").charAt(0).toLowerCase() + cat.name.slice(1).replace(/ & /g, "And").replace(/ /g, ""))}
                 href={`/search?category=${encodeURIComponent(cat.name)}`}
                 color={getCategoryStyle(cat.name).color}
                 />
             ))}
             <CategoryCard 
                 icon={Search} 
-                label="All Categories" 
+                label={t("allCategories")}
                 href="/search" 
                 color="bg-gray-100 text-gray-600" 
             />
@@ -81,7 +82,7 @@ export default function Home() {
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
             <span className="w-1.5 h-8 bg-primary rounded-full"></span>
-            Fresh Listings
+            {t("freshListings")}
           </h2>
         </div>
 
@@ -104,10 +105,10 @@ export default function Home() {
         ) : (
           <div className="text-center py-20 bg-white rounded-2xl border border-dashed border-gray-300">
             <Package className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900">No listings yet</h3>
-            <p className="text-gray-500 mb-6">Be the first to post something for sale!</p>
+            <h3 className="text-lg font-semibold text-gray-900">{t("noListingsYet")}</h3>
+            <p className="text-gray-500 mb-6">{t("beTheFirstToPost")}</p>
             <Link href="/create">
-              <Button>Post an Ad</Button>
+              <Button>{t("postAnAd")}</Button>
             </Link>
           </div>
         )}

@@ -10,8 +10,10 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { ListingCard } from "@/components/ListingCard";
 import { useListings } from "@/hooks/use-listings";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useTranslation } from "react-i18next";
 
 export default function SearchPage() {
+  const { t } = useTranslation();
   const [location] = useLocation();
   const searchParams = new URLSearchParams(window.location.search);
   
@@ -28,7 +30,7 @@ export default function SearchPage() {
     category: filters.category === "all" ? undefined : filters.category,
     city: filters.city === "all" ? undefined : filters.city,
     sort: filters.sort,
-    minPrice: filters.priceRange[0],
+  minPrice: filters.priceRange[0],
     maxPrice: filters.priceRange[1]
   });
 
@@ -45,51 +47,51 @@ export default function SearchPage() {
   const FilterPanel = () => (
     <div className="space-y-6">
       <div>
-        <h3 className="text-sm font-semibold text-gray-900 mb-3">Category</h3>
+        <h3 className="text-sm font-semibold text-gray-900 mb-3">{t('category')}</h3>
         <Select 
           value={filters.category} 
           onValueChange={(val) => setFilters(prev => ({ ...prev, category: val }))}
         >
           <SelectTrigger className="w-full bg-white">
-            <SelectValue placeholder="All Categories" />
+            <SelectValue placeholder={t('allCategories')} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Categories</SelectItem>
-            <SelectItem value="Hubs & Electronics">Hubs & Electronics</SelectItem>
-            <SelectItem value="Motors">Motors</SelectItem>
-            <SelectItem value="Servos">Servos</SelectItem>
-            <SelectItem value="Structure">Structure</SelectItem>
-            <SelectItem value="Wheels">Wheels</SelectItem>
-            <SelectItem value="Sensors">Sensors</SelectItem>
-            <SelectItem value="Wires">Wires</SelectItem>
-            <SelectItem value="Tools">Tools</SelectItem>
-            <SelectItem value="Kits">Kits</SelectItem>
+            <SelectItem value="all">{t('allCategories')}</SelectItem>
+            <SelectItem value="Hubs & Electronics">{t('hubsAndElectronics')}</SelectItem>
+            <SelectItem value="Motors">{t('motors')}</SelectItem>
+            <SelectItem value="Servos">{t('servos')}</SelectItem>
+            <SelectItem value="Structure">{t('structure')}</SelectItem>
+            <SelectItem value="Wheels">{t('wheels')}</SelectItem>
+            <SelectItem value="Sensors">{t('sensors')}</SelectItem>
+            <SelectItem value="Wires">{t('wires')}</SelectItem>
+            <SelectItem value="Tools">{t('tools')}</SelectItem>
+            <SelectItem value="Kits">{t('kits')}</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
       <div>
-        <h3 className="text-sm font-semibold text-gray-900 mb-3">City</h3>
+        <h3 className="text-sm font-semibold text-gray-900 mb-3">{t('city')}</h3>
         <Select 
           value={filters.city} 
           onValueChange={(val) => setFilters(prev => ({ ...prev, city: val }))}
         >
           <SelectTrigger className="w-full bg-white">
-            <SelectValue placeholder="All Cities" />
+            <SelectValue placeholder={t('allCities')} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Cities</SelectItem>
-            <SelectItem value="Almaty">Almaty</SelectItem>
-            <SelectItem value="Astana">Astana</SelectItem>
-            <SelectItem value="Shymkent">Shymkent</SelectItem>
-            <SelectItem value="Karaganda">Karaganda</SelectItem>
+            <SelectItem value="all">{t('allCities')}</SelectItem>
+            <SelectItem value="Almaty">{t('almaty')}</SelectItem>
+            <SelectItem value="Astana">{t('astana')}</SelectItem>
+            <SelectItem value="Shymkent">{t('shymkent')}</SelectItem>
+            <SelectItem value="Karaganda">{t('karaganda')}</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
       <div>
         <div className="flex justify-between mb-3">
-          <h3 className="text-sm font-semibold text-gray-900">Price Range</h3>
+          <h3 className="text-sm font-semibold text-gray-900">{t('priceRange')}</h3>
           <span className="text-xs text-gray-500">
             {filters.priceRange[0]} - {filters.priceRange[1]} ₸
           </span>
@@ -105,7 +107,7 @@ export default function SearchPage() {
       </div>
 
       <div>
-        <h3 className="text-sm font-semibold text-gray-900 mb-3">Sort By</h3>
+        <h3 className="text-sm font-semibold text-gray-900 mb-3">{t('sortBy')}</h3>
         <Select 
           value={filters.sort} 
           onValueChange={(val) => setFilters(prev => ({ ...prev, sort: val }))}
@@ -114,9 +116,9 @@ export default function SearchPage() {
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="recent">Newest First</SelectItem>
-            <SelectItem value="price-asc">Price: Low to High</SelectItem>
-            <SelectItem value="price-desc">Price: High to Low</SelectItem>
+            <SelectItem value="recent">{t('newestFirst')}</SelectItem>
+            <SelectItem value="price-asc">{t('priceAsc')}</SelectItem>
+            <SelectItem value="price-desc">{t('priceDesc')}</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -132,7 +134,7 @@ export default function SearchPage() {
           priceRange: [0, 500000]
         })}
       >
-        Reset Filters
+        {t('resetFilters')}
       </Button>
     </div>
   );
@@ -145,7 +147,7 @@ export default function SearchPage() {
         <div className="flex items-center gap-4 mb-8">
           <div className="flex-1 relative">
             <Input 
-              placeholder="Search listings..." 
+              placeholder={t('searchListings')}
               value={filters.search}
               onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
               className="pl-10 h-12 text-lg bg-white shadow-sm border-gray-200"
@@ -158,12 +160,12 @@ export default function SearchPage() {
           <Sheet>
             <SheetTrigger asChild>
               <Button variant="outline" className="lg:hidden h-12 px-6">
-                Filters
+                {t('filters')}
               </Button>
             </SheetTrigger>
             <SheetContent side="left">
               <SheetHeader className="mb-6">
-                <SheetTitle>Filters</SheetTitle>
+                <SheetTitle>{t('filters')}</SheetTitle>
               </SheetHeader>
               <FilterPanel />
             </SheetContent>
@@ -182,11 +184,11 @@ export default function SearchPage() {
           <main className="flex-1">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-xl font-bold text-gray-900">
-                {isLoading ? "Loading..." : `${listings?.length || 0} Results Found`}
+                {isLoading ? t('loading') : t('resultsFound', { count: listings?.length || 0 })}
               </h2>
               {filters.category !== "all" && (
                 <div className="flex items-center gap-2 px-3 py-1 bg-primary/10 text-primary text-sm font-medium rounded-full">
-                  {filters.category}
+                  {t(filters.category.replace(/ & /g, "And").replace(/ /g, "").charAt(0).toLowerCase() + filters.category.slice(1).replace(/ & /g, "And").replace(/ /g, ""))}
                   <X 
                     className="w-4 h-4 cursor-pointer hover:text-primary/70" 
                     onClick={() => setFilters(prev => ({ ...prev, category: "all" }))}
@@ -209,9 +211,9 @@ export default function SearchPage() {
               </div>
             ) : (
               <div className="text-center py-20 bg-white rounded-xl border border-dashed border-gray-300">
-                <p className="text-lg text-gray-500 mb-4">No listings match your search.</p>
+                <p className="text-lg text-gray-500 mb-4">{t('noListingsMatch')}</p>
                 <Button variant="outline" onClick={() => setFilters(prev => ({ ...prev, category: "all", search: "" }))}>
-                  Clear Search
+                  {t('clearSearch')}
                 </Button>
               </div>
             )}

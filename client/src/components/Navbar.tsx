@@ -1,11 +1,13 @@
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, Search, MessageSquare, User, LogOut } from "lucide-react";
+import { Menu, MessageSquare, User, LogOut } from "lucide-react";
 import { isLoggedIn, logout } from "@/lib/auth-utils";
 import { useMe } from "@/hooks/api";
+import { useTranslation } from "react-i18next";
 
 export function Navbar() {
+  const { t } = useTranslation();
   const loggedIn = isLoggedIn();
   const { data: user } = useMe();
 
@@ -13,7 +15,7 @@ export function Navbar() {
     <header className="bg-white/80 backdrop-blur-lg sticky top-0 z-40 border-b">
       <div className="container-custom mx-auto flex items-center justify-between h-16">
         <Link href="/">
-          <a className="text-xl font-bold">FTC Marketplace</a>
+          <a className="text-xl font-bold">{t('ftcMarketplace')}</a>
         </Link>
 
         {/* Desktop Nav */}
@@ -21,7 +23,7 @@ export function Navbar() {
           {loggedIn && user ? (
             <div className="flex items-center gap-4">
               <Link href="/create">
-                  <Button variant="outline">Post Ad</Button>
+                  <Button variant="outline">{t('postAd')}</Button>
               </Link>
               <Link href="/chat">
                 <Button variant="ghost" size="icon">
@@ -36,10 +38,10 @@ export function Navbar() {
           ) : (
             <div className="flex items-center gap-2">
               <Link href="/login">
-                <Button variant="ghost">Login</Button>
+                <Button variant="ghost">{t('login')}</Button>
               </Link>
               <Link href="/register">
-                <Button>Sign Up</Button>
+                <Button>{t('signUp')}</Button>
               </Link>
             </div>
           )}
@@ -55,17 +57,17 @@ export function Navbar() {
               {loggedIn && user ? (
                 <>
                   <Link href="/profile"><a className="flex items-center gap-2"><User />{user.name}</a></Link>
-                  <Link href="/chat"><a className="flex items-center gap-2"><MessageSquare />Messages</a></Link>
-                  <button onClick={logout} className="flex items-center gap-2"><LogOut />Logout</button>
+                  <Link href="/chat"><a className="flex items-center gap-2"><MessageSquare />{t('messages')}</a></Link>
+                  <button onClick={logout} className="flex items-center gap-2"><LogOut />{t('logout')}</button>
                 </>
               ) : (
                 <>
-                  <Link href="/login"><a>Login</a></Link>
-                  <Link href="/register"><a>Sign Up</a></Link>
+                  <Link href="/login"><a>{t('login')}</a></Link>
+                  <Link href="/register"><a>{t('signUp')}</a></Link>
                 </>
               )}
                <hr/>
-               <Link href="/create"><Button>Post Ad</Button></Link>
+               <Link href="/create"><Button>{t('postAd')}</Button></Link>
             </nav>
           </SheetContent>
         </Sheet>
