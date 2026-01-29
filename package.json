@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "tsx watch server/index.ts",
     "build:client": "vite build --outDir dist/public",
-    "build": "npm run build:client && tsx script/build.ts",
+    "build": "npm run build:client",
     "start": "node dist/index.js",
     "test": "vitest",
     "drizzle:generate": "drizzle-kit generate:pg",
