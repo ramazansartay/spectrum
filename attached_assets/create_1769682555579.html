@@ -1,90 +1,168 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Создать объявление — FTC Spectrum</title>
-  <link rel="icon" type="image/png" href="logo.png">
-  <link rel="stylesheet" href="style.css" />
-  <link rel="stylesheet" href="styleminecraftmodcreate.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title id="pageTitle">Новое объявление</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="main-header">
-    <span class="logo" onclick="location.href='index.html'" style="cursor:pointer">FTC Spectrum</span>
-    <button class="burger" id="burgerBtn"><span></span><span></span><span></span></button>
-    <nav id="mainNav" class="nav">
-      <button class="nav-btn" id="langBtn">Рус</button>
-      <button class="nav-btn" id="msgBtn">Чат</button>
-      <button class="nav-btn" id="profileBtn">Профиль</button>
-      <button class="post-ad" id="adBtn">Подать объявление</button>
-    </nav>
-  </header>
+  <div class="container">
+    <form class="create-ad-form" id="adForm">
+      <h1 class="form-title" id="formTitle">Новое объявление</h1>
 
-  <main>
-    <div class="create-wrapper">
-      <h1 class="create-title">Создать объявление</h1>
-      <form class="create-form" id="adForm" autocomplete="off">
-        <div class="form-block">
-          <div class="form-block-title">Опишите в подробностях</div>
-          <label>
-            <span class="form-label">Укажите название *</span>
-            <input type="text" name="name" id="titleInput" maxlength="70" minlength="16" required placeholder="Например, Control Hub v2 или GoBilda мотор">
-            <span class="input-hint"><span id="titleCount">0</span>/70</span>
-          </label>
-          <label>
-            <span class="form-label">Категория *</span>
-            <select name="cat" required>
-              <option value="">Выберите категорию</option>
-              <option>Hubs & Electronics</option>
-              <option>Моторы</option>
-              <option>Сервоприводы</option>
-              <option>Structure (GoBilda)</option>
-              <option>Structure (REV)</option>
-              <option>Колеса</option>
-              <option>Датчики</option>
-              <option>Провода / Кабели</option>
-              <option>Инструменты</option>
-              <option>Комплекты (Kits)</option>
-            </select>
-          </label>
-        </div>
-        <div class="form-block">
-          <div class="form-block-title">Фото</div>
-          <div class="photo-helper">Первое фото будет на обложке объявления. Перетащите, чтобы изменить порядок.</div>
-          <div class="photo-list" id="photoList">
-            <label class="photo-add">
-              <input type="file" accept="image/*" style="display:none" id="fileInput" multiple>
-              <span>Добавить фото</span>
-            </label>
-          </div>
-        </div>
-        <div class="form-block">
-          <label>
-            <span class="form-label">Описание *</span>
-            <textarea rows="4" name="desc" required minlength="15" maxlength="400" placeholder="Подробно опишите товар, состояние, комплектацию и условия передачи"></textarea>
+      <div class="form-block">
+        <label>
+          <span class="form-label" id="labelName">Название *</span>
+          <input type="text" class="form-input" name="name" required placeholder="Например, «Фара Toyota Camry 70»" id="placeholderName">
+        </label>
+      </div>
+
+      <div class="form-block">
+        <label>
+          <span class="form-label" id="labelCategory">Категория *</span>
+          <select class="form-input" name="cat" required id="categorySelect">
+            <option value="" id="optionDefault">Выберите категорию</option>
+            <option value="structure" id="optionStructure">Structure (REV)</option>
+            <option value="wheels" id="optionWheels">Колеса</option>
+            <option value="sensors" id="optionSensors">Датчики</option>
+            <option value="wires" id="optionWires">Провода / Кабели</option>
+            <option value="tools" id="optionTools">Инструменты</option>
+            <option value="kits" id="optionKits">Комплекты (Kits)</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="form-block">
+        <div class="form-block-title" id="titlePhoto">Фото</div>
+        <div class="photo-helper" id="photoHelper">Первое фото будет на обложке объявления. Перетащите, чтобы изменить порядок.</div>
+        <div class="photo-list" id="photoList">
+          <label class="photo-add">
+            <input type="file" accept="image/*" style="display:none" id="fileInput" multiple>
+            <span id="buttonAddPhoto">Добавить фото</span>
           </label>
         </div>
-        <div class="form-block location-row">
-          <label>
-            <span class="form-label">Наше местоположение *</span>
-            <input name="location" required placeholder="Город или регион">
-          </label>
-          <label>
-            <span class="form-label">Контактная информация *</span>
-            <input name="user" required placeholder="Имя, телефон или WhatsApp">
-          </label>
-          <label>
-            <span class="form-label">Цена *</span>
-            <input name="price" required placeholder="Например, 20000₸">
-          </label>
-        </div>
-        <div style="text-align:center"><button type="submit" class="post-ad" style="margin:28px auto 0 auto;">Опубликовать объявление</button></div>
-      </form>
-    </div>
-  </main>
-  <script src="main.js"></script>
+      </div>
+
+      <div class="form-block">
+        <label>
+          <span class="form-label" id="labelDescription">Описание *</span>
+          <textarea class="form-input" name="desc" rows="6" required placeholder="Подумайте, какие подробности вы хотели бы узнать из другого объявления. И опишите свой товар также." id="placeholderDescription"></textarea>
+        </label>
+      </div>
+
+      <div class="form-block">
+        <label>
+          <span class="form-label" id="labelPrice">Цена *</span>
+          <input type="number" class="form-input" name="price" required placeholder="Цена в тенге" id="placeholderPrice">
+        </label>
+      </div>
+
+      <div class="form-block">
+        <label>
+          <span class="form-label" id="labelLocation">Местоположение *</span>
+          <input type="text" class="form-input" name="location" required placeholder="Например, «Алматы, Алатауский район»" id="placeholderLocation">
+        </label>
+      </div>
+
+      <div class="form-block">
+        <label>
+          <span class="form-label" id="labelContact">Контактное лицо *</span>
+          <input type="text" class="form-input" name="user" required placeholder="Как к вам обращаться" id="placeholderContact">
+        </label>
+      </div>
+
+      <button type="submit" class="form-submit" id="buttonSubmit">Опубликовать</button>
+    </form>
+  </div>
+  <script>
+    const LANGUAGES = {
+      ru: {
+        pageTitle: "Новое объявление",
+        formTitle: "Новое объявление",
+        labelName: "Название *",
+        placeholderName: "Например, «Фара Toyota Camry 70»",
+        labelCategory: "Категория *",
+        optionDefault: "Выберите категорию",
+        optionStructure: "Structure (REV)",
+        optionWheels: "Колеса",
+        optionSensors: "Датчики",
+        optionWires: "Провода / Кабели",
+        optionTools: "Инструменты",
+        optionKits: "Комплекты (Kits)",
+        titlePhoto: "Фото",
+        photoHelper: "Первое фото будет на обложке объявления. Перетащите, чтобы изменить порядок.",
+        buttonAddPhoto: "Добавить фото",
+        labelDescription: "Описание *",
+        placeholderDescription: "Подумайте, какие подробности вы хотели бы узнать из другого объявления. И опишите свой товар также.",
+        labelPrice: "Цена *",
+        placeholderPrice: "Цена в тенге",
+        labelLocation: "Местоположение *",
+        placeholderLocation: "Например, «Алматы, Алатауский район»",
+        labelContact: "Контактное лицо *",
+        placeholderContact: "Как к вам обращаться",
+        buttonSubmit: "Опубликовать",
+      },
+      kz: {
+        pageTitle: "Жаңа хабарландыру",
+        formTitle: "Жаңа хабарландыру",
+        labelName: "Атауы *",
+        placeholderName: "Мысалы, «Toyota Camry 70 фарасы»",
+        labelCategory: "Санат *",
+        optionDefault: "Санатты таңдаңыз",
+        optionStructure: "Structure (REV)",
+        optionWheels: "Дөңгелектер",
+        optionSensors: "Датчиктер",
+        optionWires: "Сымдар / Кабельдер",
+        optionTools: "Құралдар",
+        optionKits: "Жинақтар (Kits)",
+        titlePhoto: "Фото",
+        photoHelper: "Бірінші фото хабарландырудың мұқабасында болады. Ретін өзгерту үшін сүйреңіз.",
+        buttonAddPhoto: "Фото қосу",
+        labelDescription: "Сипаттамасы *",
+        placeholderDescription: "Басқа хабарландырудан қандай мәліметтерді білгіңіз келетінін ойланыңыз. Және өз тауарыңызды да солай сипаттаңыз.",
+        labelPrice: "Бағасы *",
+        placeholderPrice: "Бағасы теңгемен",
+        labelLocation: "Орналасқан жері *",
+        placeholderLocation: "Мысалы, «Алматы, Алатау ауданы»",
+        labelContact: "Байланысатын адам *",
+        placeholderContact: "Сізге қалай хабарласуға болады",
+        buttonSubmit: "Жариялау",
+      }
+    };
+
+    let currentLang = localStorage.getItem('ftcspectrum_lang') || 'ru';
+
+    function updateContent() {
+      const lang = LANGUAGES[currentLang];
+      document.getElementById('pageTitle').textContent = lang.pageTitle;
+      document.getElementById('formTitle').textContent = lang.formTitle;
+      document.getElementById('labelName').textContent = lang.labelName;
+      document.getElementById('placeholderName').placeholder = lang.placeholderName;
+      document.getElementById('labelCategory').textContent = lang.labelCategory;
+      document.getElementById('optionDefault').textContent = lang.optionDefault;
+      document.getElementById('optionStructure').textContent = lang.optionStructure;
+      document.getElementById('optionWheels').textContent = lang.optionWheels;
+      document.getElementById('optionSensors').textContent = lang.optionSensors;
+      document.getElementById('optionWires').textContent = lang.optionWires;
+      document.getElementById('optionTools').textContent = lang.optionTools;
+      document.getElementById('optionKits').textContent = lang.optionKits;
+      document.getElementById('titlePhoto').textContent = lang.titlePhoto;
+      document.getElementById('photoHelper').textContent = lang.photoHelper;
+      document.getElementById('buttonAddPhoto').textContent = lang.buttonAddPhoto;
+      document.getElementById('labelDescription').textContent = lang.labelDescription;
+      document.getElementById('placeholderDescription').placeholder = lang.placeholderDescription;
+      document.getElementById('labelPrice').textContent = lang.labelPrice;
+      document.getElementById('placeholderPrice').placeholder = lang.placeholderPrice;
+      document.getElementById('labelLocation').textContent = lang.labelLocation;
+      document.getElementById('placeholderLocation').placeholder = lang.placeholderLocation;
+      document.getElementById('labelContact').textContent = lang.labelContact;
+      document.getElementById('placeholderContact').placeholder = lang.placeholderContact;
+      document.getElementById('buttonSubmit').textContent = lang.buttonSubmit;
+    }
+
+    document.addEventListener('DOMContentLoaded', updateContent);
+  </script>
   <script src="create.js"></script>
-  <script src="script.js"></script>
 </body>
 </html>

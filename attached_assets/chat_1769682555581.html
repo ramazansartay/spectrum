@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title id="pageTitle">Чат</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <div class="chat-tabs">
+      <button type="button" class="chat-tab-btn active" id="buyBtn">Покупаю</button>
+      <button type="button" class="chat-tab-btn" id="sellBtn">Продаю</button>
+    </div>
+
+    <div class="chat-container">
+      <div class="chat-top">
+        <button type="button" class="chat-top-btn active" id="allBtn">Все</button>
+        <button type="button" class="chat-top-btn" id="deletedBtn">Удаленные</button>
+      </div>
+
+      <div class="chat-list">
+        <div class="chat-empty">
+          <div class="chat-empty-title" id="emptyTitle">Сообщений пока нет</div>
+          <div class="chat-empty-desc" id="emptyDesc">
+            Как только вы получите сообщение, оно появится здесь.<br><br>
+            Если вы что-то продаёте или оказываете услуги,<br>начните с публикации объявления
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const LANGUAGES = {
+      ru: {
+        pageTitle: "Чат",
+        buyBtn: "Покупаю",
+        sellBtn: "Продаю",
+        allBtn: "Все",
+        deletedBtn: "Удаленные",
+        emptyTitle: "Сообщений пока нет",
+        emptyDescSell: `Как только вы получите сообщение, оно появится здесь.<br><br>
+            Если вы что-то продаёте или оказываете услуги,<br>начните с публикации объявления`,
+        emptyDescBuy: `Как только вы получите сообщение, оно появится здесь.<br><br>
+            Если вы что-то покупаете, начните с поиска интересующих объявлений`,
+      },
+      kz: {
+        pageTitle: "Чат",
+        buyBtn: "Сатып аламын",
+        sellBtn: "Сатамын",
+        allBtn: "Барлығы",
+        deletedBtn: "Жойылғандар",
+        emptyTitle: "Әзірге хабарламалар жоқ",
+        emptyDescSell: `Хабарлама алған кезде, ол осында пайда болады.<br><br>
+            Егер сіз бірдеңе сатсаңыз немесе қызмет көрсетсеңіз,<br>хабарландыруды жариялаудан бастаңыз`,
+        emptyDescBuy: `Хабарлама алған кезде, ол осында пайда болады.<br><br>
+            Егер сіз бірдеңе сатып алсаңыз,<br>қызықтыратын хабарландыруларды іздеуден бастаңыз`,
+      }
+    };
+
+    let currentLang = localStorage.getItem('ftcspectrum_lang') || 'ru';
+
+    function updateContent() {
+      const lang = LANGUAGES[currentLang];
+      document.getElementById('pageTitle').textContent = lang.pageTitle;
+      document.getElementById('buyBtn').textContent = lang.buyBtn;
+      document.getElementById('sellBtn').textContent = lang.sellBtn;
+      document.getElementById('allBtn').textContent = lang.allBtn;
+      document.getElementById('deletedBtn').textContent = lang.deletedBtn;
+      document.getElementById('emptyTitle').textContent = lang.emptyTitle;
+      if (document.getElementById('buyBtn').classList.contains('active')) {
+        document.getElementById('emptyDesc').innerHTML = lang.emptyDescSell;
+      } else {
+        document.getElementById('emptyDesc').innerHTML = lang.emptyDescBuy;
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', updateContent);
+  </script>
+  <script src="chat.js"></script>
+</body>
+</html>
