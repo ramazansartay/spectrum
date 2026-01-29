@@ -1,6 +1,6 @@
 import { Response } from "express";
 import { db } from "../db";
-import { chats, messages } from "@shared/schema";
+import * as schema from "@shared/schema";
 import { AuthRequest } from "../middleware/auth";
 import { eq, and, or } from "drizzle-orm";
 import { api } from "@shared/routes";
@@ -10,7 +10,7 @@ export async function list(req: AuthRequest, res: Response) {
   if (!req.userId) return res.status(401).json({ message: "Unauthorized" });
 
   const userChats = await db.query.chats.findMany({
-    where: or(eq(chats.buyerId, req.userId), eq(chats.sellerId, req.userId)),
+    where: or(eq(schema.chats.buyerId, req.userId), eq(schema.chats.sellerId, req.userId)),
     with: { listing: true, buyer: true, seller: true },
   });
   res.json(userChats);
@@ -21,16 +21,16 @@ export async function create(req: AuthRequest, res: Response) {
     if (!req.userId) return res.status(401).json({ message: "Unauthorized" });
     const { listingId } = api.chats.create.input.parse(req.body);
 
-    const listing = await db.query.listings.findFirst({ where: eq(listings.id, listingId) });
+    const listing = await db.query.listings.findFirst({ where: eq(schema.listings.id, listingId) });
     if (!listing) return res.status(404).json({ message: "Listing not found" });
 
     // Check if a chat already exists
     let chat = await db.query.chats.findFirst({
-        where: and(eq(chats.listingId, listingId), eq(chats.buyerId, req.userId))
+        where: and(eq(schema.chats.listingId, listingId), eq(schema.chats.buyerId, req.userId))
     });
 
     if (!chat) {
-        [chat] = await db.insert(chats).values({
+        [chat] = await db.insert(schema.chats).values({
             listingId,
             buyerId: req.userId,
             sellerId: listing.userId,
@@ -47,8 +47,8 @@ export async function get(req: AuthRequest, res: Response) {
 
   const chat = await db.query.chats.findFirst({
     where: and(
-        eq(chats.id, id),
-        or(eq(chats.buyerId, req.userId), eq(chats.sellerId, req.userId))
+        eq(schema.chats.id, id),
+        or(eq(schema.chats.buyerId, req.userId), eq(schema.chats.sellerId, req.userId))
     ),
     with: { listing: true, buyer: true, seller: true },
   });
@@ -60,15 +60,15 @@ export async function get(req: AuthRequest, res: Response) {
 }
 
 // Get messages for a chat
-export async function messages(req: AuthRequest, res: Response) {
+export async function getMessages(req: AuthRequest, res: Response) {
     if (!req.userId) return res.status(401).json({ message: "Unauthorized" });
     const chatId = Number(req.params.id);
 
     // First, verify user has access to this chat
     const chat = await db.query.chats.findFirst({
         where: and(
-            eq(chats.id, chatId),
-            or(eq(chats.buyerId, req.userId), eq(chats.sellerId, req.userId))
+            eq(schema.chats.id, chatId),
+            or(eq(schema.chats.buyerId, req.userId), eq(schema.chats.sellerId, req.userId))
         )
     });
 
@@ -77,7 +77,7 @@ export async function messages(req: AuthRequest, res: Response) {
     }
 
     const messageList = await db.query.messages.findMany({
-        where: eq(messages.chatId, chatId),
+        where: eq(schema.messages.chatId, chatId),
         orderBy: (messages, { asc }) => [asc(messages.createdAt)],
     });
     res.json(messageList);
@@ -92,8 +92,8 @@ export async function sendMessage(req: AuthRequest, res: Response) {
      // Verify user has access to this chat
     const chat = await db.query.chats.findFirst({
         where: and(
-            eq(chats.id, chatId),
-            or(eq(chats.buyerId, req.userId), eq(chats.sellerId, req.userId))
+            eq(schema.chats.id, chatId),
+            or(eq(schema.chats.buyerId, req.userId), eq(schema.chats.sellerId, req.userId))
         )
     });
 
@@ -101,7 +101,7 @@ export async function sendMessage(req: AuthRequest, res: Response) {
         return res.status(404).json({ message: "Chat not found or you don't have access" });
     }
 
-    const [newMessage] = await db.insert(messages).values({
+    const [newMessage] = await db.insert(schema.messages).values({
         chatId,
         senderId: req.userId,
         content,

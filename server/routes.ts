@@ -37,7 +37,7 @@ export async function registerRoutes(
   app.get(api.chats.list.path, authMiddleware, chats.list);
   app.post(api.chats.create.path, authMiddleware, chats.create);
   app.get(api.chats.get.path, authMiddleware, chats.get);
-  app.get(api.chats.messages.path, authMiddleware, chats.messages);
+  app.get(api.chats.messages.path, authMiddleware, chats.getMessages);
   app.post(api.chats.sendMessage.path, authMiddleware, chats.sendMessage);
 
   return httpServer;
