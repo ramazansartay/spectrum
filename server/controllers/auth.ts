@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { db } from "../db";
-import { users } from "@shared/schema";
+import * as schema from "@shared/schema";
 import { api } from "@shared/routes";
 import { createId } from "@paralleldrive/cuid2";
 import { eq } from "drizzle-orm";
@@ -12,7 +12,7 @@ const JWT_SECRET = process.env.JWT_SECRET || "your-super-secret-key";
 export async function register(req: Request, res: Response) {
   try {
     const { email, password, name } = api.auth.register.input.parse(req.body);
-    const existingUser = await db.query.users.findFirst({ where: eq(users.email, email) });
+    const existingUser = await db.query.users.findFirst({ where: eq(schema.users.email, email) });
     if (existingUser) {
       return res.status(409).json({ message: "User with this email already exists" });
     }
@@ -20,7 +20,7 @@ export async function register(req: Request, res: Response) {
     const passwordHash = await bcrypt.hash(password, 10);
     const userId = createId();
 
-    await db.insert(users).values({
+    await db.insert(schema.users).values({
       id: userId,
       email,
       passwordHash,
@@ -38,7 +38,7 @@ export async function register(req: Request, res: Response) {
 export async function login(req: Request, res: Response) {
   try {
     const { email, password } = api.auth.login.input.parse(req.body);
-    const user = await db.query.users.findFirst({ where: eq(users.email, email) });
+    const user = await db.query.users.findFirst({ where: eq(schema.users.email, email) });
     if (!user) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
