@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Создать объявление — FTC Spectrum</title>
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="styleminecraftmodcreate.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+</head>
+<body>
+  <header class="main-header">
+    <span class="logo" onclick="location.href='index.html'" style="cursor:pointer">FTC Spectrum</span>
+    <button class="burger" id="burgerBtn"><span></span><span></span><span></span></button>
+    <nav id="mainNav" class="nav">
+      <button class="nav-btn" id="langBtn">Рус</button>
+      <button class="nav-btn" id="msgBtn">Чат</button>
+      <button class="nav-btn" id="profileBtn">Профиль</button>
+      <button class="post-ad" id="adBtn">Подать объявление</button>
+    </nav>
+  </header>
+
+  <main>
+    <div class="create-wrapper">
+      <h1 class="create-title">Создать объявление</h1>
+      <form class="create-form" id="adForm" autocomplete="off">
+        <div class="form-block">
+          <div class="form-block-title">Опишите в подробностях</div>
+          <label>
+            <span class="form-label">Укажите название *</span>
+            <input type="text" name="name" id="titleInput" maxlength="70" minlength="16" required placeholder="Например, Control Hub v2 или GoBilda мотор">
+            <span class="input-hint"><span id="titleCount">0</span>/70</span>
+          </label>
+          <label>
+            <span class="form-label">Категория *</span>
+            <select name="cat" required>
+              <option value="">Выберите категорию</option>
+              <option>Hubs & Electronics</option>
+              <option>Моторы</option>
+              <option>Сервоприводы</option>
+              <option>Structure (GoBilda)</option>
+              <option>Structure (REV)</option>
+              <option>Колеса</option>
+              <option>Датчики</option>
+              <option>Провода / Кабели</option>
+              <option>Инструменты</option>
+              <option>Комплекты (Kits)</option>
+            </select>
+          </label>
+        </div>
+        <div class="form-block">
+          <div class="form-block-title">Фото</div>
+          <div class="photo-helper">Первое фото будет на обложке объявления. Перетащите, чтобы изменить порядок.</div>
+          <div class="photo-list" id="photoList">
+            <label class="photo-add">
+              <input type="file" accept="image/*" style="display:none" id="fileInput" multiple>
+              <span>Добавить фото</span>
+            </label>
+          </div>
+        </div>
+        <div class="form-block">
+          <label>
+            <span class="form-label">Описание *</span>
+            <textarea rows="4" name="desc" required minlength="15" maxlength="400" placeholder="Подробно опишите товар, состояние, комплектацию и условия передачи"></textarea>
+          </label>
+        </div>
+        <div class="form-block location-row">
+          <label>
+            <span class="form-label">Наше местоположение *</span>
+            <input name="location" required placeholder="Город или регион">
+          </label>
+          <label>
+            <span class="form-label">Контактная информация *</span>
+            <input name="user" required placeholder="Имя, телефон или WhatsApp">
+          </label>
+          <label>
+            <span class="form-label">Цена *</span>
+            <input name="price" required placeholder="Например, 20000₸">
+          </label>
+        </div>
+        <div style="text-align:center"><button type="submit" class="post-ad" style="margin:28px auto 0 auto;">Опубликовать объявление</button></div>
+      </form>
+    </div>
+  </main>
+  <script src="main.js"></script>
+  <script src="create.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

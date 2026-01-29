@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Чат — FTC Spectrum</title>
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="styleminecraftmodcreate.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <header class="main-header">
+    <span class="logo" onclick="location.href='index.html'" style="cursor:pointer">FTC Spectrum</span>
+    <button class="burger" id="burgerBtn"><span></span><span></span><span></span></button>
+    <nav id="mainNav" class="nav">
+      <button class="nav-btn" id="langBtn">Рус</button>
+      <button class="nav-btn" id="msgBtn">Чат</button>
+      <button class="nav-btn" id="profileBtn">Профиль</button>
+      <button class="post-ad" id="adBtn">Подать объявление</button>
+    </nav>
+  </header>
+  <main>
+    <div class="chat-root">
+      <div class="chat-sidebar">
+        <div class="chat-sidebar-top">
+          <button class="chat-top-btn active"><svg width="22" height="22" style="margin-right:6px;" fill="none" viewBox="0 0 24 24"><path d="M6.5 12L5 13.5L1 9.5" stroke="#223F51" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect x="3" y="3" width="18" height="18" rx="6" stroke="#223F51" stroke-width="2"/><path d="M17 8H14M17 12H13M17 16H11" stroke="#223F51" stroke-width="2" stroke-linecap="round"/></svg>Сохранённые</button>
+          <button class="chat-top-btn"><svg width="22" height="22" fill="none" style="margin-right:6px;" viewBox="0 0 24 24"><path d="M3 6.5V19a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.5m-18 0V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v1.5m-18 0h18M9 10V17M15 10V17" stroke="#223F51" stroke-width="2" stroke-linecap="round"/></svg>Корзина</button>
+        </div>
+        <div class="chat-filters">
+          <button class="chat-filter-btn active" id="buyBtn">Покупаю</button>
+          <button class="chat-filter-btn" id="sellBtn">Продаю</button>
+        </div>
+        <div class="chat-empty">
+          <div class="chat-empty-img">
+            <svg width="90" height="90" viewBox="0 0 90 90" fill="none">
+              <circle cx="45" cy="45" r="45" fill="#E7EDFF"/>
+              <ellipse cx="55" cy="57" rx="22" ry="14" fill="#418CF9"/>
+              <circle cx="46" cy="47" r="11" fill="#fff"/>
+              <rect x="40" y="52" width="12" height="3" rx="1.5" fill="#12304B"/>
+              <ellipse cx="42" cy="44" rx="2.5" ry="3" fill="#12304B"/>
+              <circle cx="42" cy="44" r="1" fill="#fff"/>
+            </svg>
+          </div>
+          <div class="chat-empty-title">Сообщений пока нет</div>
+          <div class="chat-empty-desc">
+            Как только вы получите сообщение, оно появится здесь.<br>
+            <br>
+            Если вы что-то продаёте или оказываете услуги,<br>начните с публикации объявления
+          </div>
+        </div>
+      </div>
+      <div class="chat-main">
+        <div class="chat-main-center">
+          <div class="chat-empty-img" style="margin-bottom:24px;">
+            <svg width="140" height="140" viewBox="0 0 90 90" fill="none">
+              <circle cx="45" cy="45" r="45" fill="#E7EDFF"/>
+              <ellipse cx="55" cy="57" rx="22" ry="14" fill="#418CF9"/>
+              <circle cx="46" cy="47" r="11" fill="#fff"/>
+              <rect x="40" y="52" width="12" height="3" rx="1.5" fill="#12304B"/>
+              <ellipse cx="42" cy="44" rx="2.5" ry="3" fill="#12304B"/>
+              <circle cx="42" cy="44" r="1" fill="#fff"/>
+            </svg>
+          </div>
+          <div class="chat-main-empty-text">Выберите сообщение, чтобы прочитать его</div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <script src="main.js"></script>
+  <script src="chat.js"></script>
+</body>
+</html>

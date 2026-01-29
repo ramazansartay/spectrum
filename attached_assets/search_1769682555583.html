@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Поиск — FTC Spectrum</title>
+  <link rel="icon" type="image/png" href="logo.png">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/8/84/FTC-Logo.png" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="search.css" />
+</head>
+<body>
+  <header class="main-header">
+    <span class="logo" onclick="location.href='index.html'" style="cursor:pointer">FTC Spectrum</span>
+    <button class="burger" id="burgerBtn"><span></span><span></span><span></span></button>
+    <nav id="mainNav" class="nav">
+      <button class="nav-btn" id="langBtn">Рус</button>
+      <button class="nav-btn" id="msgBtn">Чат</button>
+      <button class="nav-btn" id="profileBtn">Профиль</button>
+      <button class="post-ad" id="adBtn">Подать объявление</button>
+    </nav>
+  </header>
+
+  <section class="search-section">
+    <form class="search-form" id="searchForm" autocomplete="off" role="search" aria-label="Поиск">
+      <input type="text" class="search-box" id="searchInput" placeholder="Поиск детали" aria-label="Поиск детали" value=""/>
+      <button class="search-btn" type="submit" id="searchSubmitBtn">Поиск</button>
+    </form>
+  </section>
+
+  <main>
+    <div id="categoriesView">
+      <h2 class="sections-title">Категории запчастей FTC</h2>
+      <section>
+        <div class="categories" id="categories" role="listbox" aria-label="Категории"></div>
+      </section>
+
+      <section class="posts-section">
+        <h3 class="posts-title">Новые объявления</h3>
+        <div class="posts-list" id="postsList"></div>
+      </section>
+    </div>
+
+    <div id="searchView" style="display: none;">
+      <div class="search-page">
+        <div class="search-filters">
+          <h3 class="filters-title">Фильтры</h3>
+          
+          <div class="filter-group">
+            <label class="filter-label">Категория</label>
+            <select id="categoryFilter" class="filter-select">
+              <option value="">Все категории</option>
+              <option value="Hubs & Electronics">Hubs & Electronics</option>
+              <option value="Моторы">Моторы</option>
+              <option value="Сервоприводы">Сервоприводы</option>
+              <option value="Structure (GoBilda)">Structure (GoBilda)</option>
+              <option value="Structure (REV)">Structure (REV)</option>
+              <option value="Колеса">Колеса</option>
+              <option value="Датчики">Датчики</option>
+              <option value="Провода / Кабели">Провода / Кабели</option>
+              <option value="Инструменты">Инструменты</option>
+              <option value="Комплекты (Kits)">Комплекты (Kits)</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label class="filter-label">Сортировка</label>
+            <select id="sortFilter" class="filter-select">
+              <option value="recent">По новизне</option>
+              <option value="price-asc">Цена: возрастание</option>
+              <option value="price-desc">Цена: убывание</option>
+              <option value="popular">Популярное</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label class="filter-label">Цена (₸)</label>
+            <div class="price-range">
+              <input type="number" id="minPrice" class="price-input" placeholder="От" min="0">
+              <input type="number" id="maxPrice" class="price-input" placeholder="До" min="0">
+            </div>
+          </div>
+
+          <div class="filter-group">
+            <label class="filter-label">Город</label>
+            <select id="cityFilter" class="filter-select">
+              <option value="">Все города</option>
+              <option value="Алматы">Алматы</option>
+              <option value="Астана">Астана</option>
+              <option value="Актау">Актау</option>
+              <option value="Актобе">Актобе</option>
+              <option value="Атырау">Атырау</option>
+              <option value="Байконур">Байконур</option>
+              <option value="Караганда">Караганда</option>
+              <option value="Кокшетау">Кокшетау</option>
+              <option value="Костанай">Костанай</option>
+              <option value="Кызылорда">Кызылорда</option>
+              <option value="Лисаковск">Лисаковск</option>
+              <option value="Павлодар">Павлодар</option>
+              <option value="Петропавловск">Петропавловск</option>
+              <option value="Рудный">Рудный</option>
+              <option value="Семей">Семей</option>
+              <option value="Талдыкорган">Талдыкорган</option>
+              <option value="Тараз">Тараз</option>
+              <option value="Туркестан">Туркестан</option>
+              <option value="Уральск">Уральск</option>
+              <option value="Усть-Каменогорск">Усть-Каменогорск</option>
+              <option value="Шымкент">Шымкент</option>
+              <option value="Экибастуз">Экибастуз</option>
+            </select>
+            <div class="city-selected" id="citySelected" style="display:none; margin-top:8px; padding:6px 10px; background:#e3f1ff; border-radius:6px; font-size:0.9em; color:#0066cc;">
+              Выбран город: <strong id="citySelectedText"></strong>
+            </div>
+          </div>
+
+          <button type="button" class="search-btn apply-filters-btn" id="applyFiltersBtn" style="width:100%; margin-top:20px;">Применить фильтры</button>
+          <button type="button" class="search-btn reset-filters-btn" id="resetFiltersBtn" style="width:100%; margin-top:8px;">Очистить</button>
+          <button type="button" class="search-btn back-btn" id="backToCategoriesBtn" style="width:100%; margin-top:8px;">← Вернуться</button>
+        </div>
+
+        <div class="search-results">
+          <div class="results-header">
+            <h2 id="resultsTitle">Результаты поиска</h2>
+            <span class="results-count" id="resultsCount">0 результатов</span>
+          </div>
+          <div class="posts-list" id="searchPostsList"></div>
+          <div class="no-posts" id="noResultsMsg" style="display:none;">
+            По вашему запросу ничего не найдено. Попробуйте изменить критерии поиска.
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <script src="search.js"></script>
+  <script src="main.js"></script>
+  <script src="script.js"></script>
+  <script src="profile.js"></script>
+</body>
+</html>

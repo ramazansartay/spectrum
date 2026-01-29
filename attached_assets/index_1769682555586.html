@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <link rel="icon" type="image/png" href="logo.png">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FTC Spectrum — Объявления</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/8/84/FTC-Logo.png" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="main-header">
+    <span class="logo">FTC Spectrum</span>
+    <button aria-label="Открыть меню" class="burger" id="burgerBtn" aria-expanded="false" aria-controls="mainNav">
+      <span></span><span></span><span></span>
+    </button>
+<nav id="mainNav" class="nav">
+  <button class="nav-btn" id="langBtn" aria-label="Сменить язык">Рус</button>
+  <button class="nav-btn" id="msgBtn" aria-label="Мои сообщения">Чат</button>
+  <button class="nav-btn" id="profileBtn" aria-label="Профиль">Профиль</button>
+  <button class="post-ad" id="adBtn" aria-label="Подать объявление">Подать объявление</button>
+</nav>
+   </header>
+
+  <section class="search-section">
+    <form class="search-form" id="searchForm" autocomplete="off" role="search" aria-label="Поиск">
+      <input type="text" class="search-box" id="searchInput" placeholder="Поиск детали" aria-label="Поиск детали"/>
+      <button class="search-btn" type="submit">Поиск</button>
+    </form>
+  </section>
+
+  <main>
+    <h2 class="sections-title" id="sectionTitle">Категории запчастей FTC</h2>
+    <section>
+      <div class="categories" id="categories" role="listbox" aria-label="Категории"></div>
+    </section>
+
+    <section class="posts-section">
+      <h3 class="posts-title" id="postsTitle">Новые объявления</h3>
+      <div class="posts-list" id="postsList"></div>
+    </section>
+  </main>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const searchBtn = document.getElementById('searchBtn');
+      if(searchBtn) {
+        searchBtn.onclick = function() {
+          window.location.href = 'search.html';
+        };
+      }
+
+      const searchForm = document.getElementById('searchForm');
+      if(searchForm) {
+        searchForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          const query = document.getElementById('searchInput').value.trim();
+          if(query.length > 0) {
+            window.location.href = 'search.html?q=' + encodeURIComponent(query);
+          }
+        });
+      }
+    });
+  </script>
+  <script src="script.js"></script>
+</body>
+</html>
