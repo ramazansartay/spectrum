@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useLocation } from 'wouter';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -15,9 +15,10 @@ import { Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { z } from 'zod';
 
-const formSchema = insertListingSchema.omit({ userId: true, createdAt: true, id: true, category: true }).extend({
-  price: z.coerce.number().positive(),
-  categoryId: z.coerce.number(),
+const formSchema = insertListingSchema.omit({ userId: true, createdAt: true, id: true, category: true, images: true }).extend({
+  price: z.preprocess((a) => parseInt(z.string().parse(a), 10), z.number().positive()),
+  categoryId: z.preprocess((a) => parseInt(z.string().parse(a), 10), z.number()),
+  images: z.any(),
 });
 
 export default function CreateListing() {
@@ -26,6 +27,7 @@ export default function CreateListing() {
   const { data: user, isLoading: isUserLoading, isError } = useMe();
   const { data: categories, isLoading: areCategoriesLoading } = useCategories();
   const { mutate: createListing, isPending } = useCreateListing();
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -47,7 +49,8 @@ export default function CreateListing() {
   }, [user, isUserLoading, isError, setLocation, form]);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    createListing(values, {
+    const { images, ...rest } = values;
+    createListing({ ...rest, price: String(rest.price), images: Array.from(images as FileList) }, {
       onSuccess: (newListing) => {
         toast({ title: 'Success!', description: 'Your listing has been published.' });
         setLocation(`/listing/${newListing.id}`);
@@ -88,6 +91,40 @@ export default function CreateListing() {
                  <FormField name="price" control={form.control} render={({ field }) => <FormItem><FormLabel>Price (₸)</FormLabel><FormControl><Input type='number' {...field} /></FormControl><FormMessage /></FormItem>} />
                 <FormField name="description" control={form.control} render={({ field }) => <FormItem><FormLabel>Description</FormLabel><FormControl><Textarea placeholder='Describe the condition, specs, etc.' {...field} /></FormControl><FormMessage /></FormItem>} />
                  <FormField name="location" control={form.control} render={({ field }) => <FormItem><FormLabel>Location</FormLabel><FormControl><Input placeholder='e.g. Almaty' {...field} /></FormControl><FormMessage /></FormItem>} />
+                 <FormField
+                    control={form.control}
+                    name="images"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Images</FormLabel>
+                        <FormControl>
+                            <Input 
+                                type="file" 
+                                multiple 
+                                accept="image/*" 
+                                onChange={(e) => {
+                                    field.onChange(e.target.files);
+                                    if (e.target.files) {
+                                        const files = Array.from(e.target.files);
+                                        const newPreviews = files.map(file => URL.createObjectURL(file));
+                                        setImagePreviews(newPreviews);
+                                    }
+                                }}
+                            />
+                        </FormControl>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                    />
+
+                    {imagePreviews.length > 0 && (
+                        <div className="grid grid-cols-3 gap-4 mt-4">
+                            {imagePreviews.map((preview, index) => (
+                                <img key={index} src={preview} alt={`preview ${index}`} className="w-full h-auto rounded-md"/>
+                            ))}
+                        </div>
+                    )}
+
                 <div className="flex justify-end gap-4">
                   <Button type='button' variant='outline' onClick={() => setLocation('/')}>Cancel</Button>
                   <Button type='submit' disabled={isPending}>{isPending ? 'Publishing...' : 'Publish Listing'}</Button>

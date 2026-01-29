@@ -1,7 +1,18 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api as apiSchemas } from '@shared/routes';
 import { api } from '../lib/api';
-import { Listing, Category, User, Chat, Message, InsertListing } from '@shared/schema';
+import { Listing, Category, User, Chat, Message } from '@shared/schema';
+
+// Custom type for the creation hook, because `images` is a FileList, not string[]
+export type CreateListingInput = {
+    title: string;
+    description: string;
+    price: string;
+    location: string;
+    categoryId: number;
+    images?: FileList;
+};
+
 
 // Auth & User
 export const useMe = () => useQuery<User>({ queryKey: ['me'], queryFn: () => api.get(apiSchemas.users.me.path) });
@@ -21,8 +32,25 @@ export const useListing = (id: number) =>
 
 export const useCreateListing = () => {
     const queryClient = useQueryClient();
-    return useMutation<Listing, Error, InsertListing>({ 
-        mutationFn: (newListing) => api.post(apiSchemas.listings.create.path, newListing),
+    return useMutation<Listing, Error, CreateListingInput>({ 
+        mutationFn: (newListing) => {
+            const formData = new FormData();
+            
+            // Append all fields to the form data
+            Object.entries(newListing).forEach(([key, value]) => {
+                if (key === 'images') {
+                    if (value) {
+                        for (let i = 0; i < (value as FileList).length; i++) {
+                            formData.append('images', (value as FileList)[i]);
+                        }
+                    }
+                } else {
+                    formData.append(key, String(value));
+                }
+            });
+
+            return api.post(apiSchemas.listings.create.path, formData);
+        },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['listings'] });
         }

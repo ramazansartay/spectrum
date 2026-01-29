@@ -7,7 +7,13 @@ function getAuthToken(): string | null {
 async function request(path: string, options: RequestInit = {}) {
   const token = getAuthToken();
   const headers = new Headers(options.headers || {});
-  headers.append('Content-Type', 'application/json');
+
+  let body = options.body;
+
+  if (!(body instanceof FormData)) {
+    headers.append('Content-Type', 'application/json');
+    body = JSON.stringify(body);
+  }
 
   if (token) {
     headers.append('Authorization', `Bearer ${token}`);
@@ -16,6 +22,7 @@ async function request(path: string, options: RequestInit = {}) {
   const response = await fetch(`${BASE_URL}${path}`, {
     ...options,
     headers,
+    body,
   });
 
   if (!response.ok) {
@@ -32,7 +39,7 @@ async function request(path: string, options: RequestInit = {}) {
 
 export const api = {
   get: (path: string) => request(path, { method: 'GET' }),
-  post: (path: string, data: unknown) => request(path, { method: 'POST', body: JSON.stringify(data) }),
-  put: (path: string, data: unknown) => request(path, { method: 'PUT', body: JSON.stringify(data) }),
+  post: (path: string, data: unknown) => request(path, { method: 'POST', body: data as BodyInit }),
+  put: (path: string, data: unknown) => request(path, { method: 'PUT', body: data as BodyInit }),
   delete: (path: string) => request(path, { method: 'DELETE' }),
 };
