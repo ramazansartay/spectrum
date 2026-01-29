@@ -1,3 +1,23 @@
+const LANGUAGES = {
+  ru: {
+    code: 'ru',
+    max_5_photos: "Максимум 5 фото",
+    ad_published: "Объявление опубликовано!",
+    error_too_many_photos: "Ошибка: Слишком много фото. Очистите старые объявления или добавьте меньше фото."
+  },
+  kz: {
+    code: 'kz',
+    max_5_photos: "Ең көбі 5 фото",
+    ad_published: "Хабарландыру жарияланды!",
+    error_too_many_photos: "Қате: Фотосуреттер тым көп. Ескі хабарландыруларды өшіріңіз немесе азырақ фотосуреттер қосыңыз."
+  }
+};
+
+let currentLang = localStorage.getItem('ftcspectrum_lang') || 'ru';
+function getLang() {
+  return LANGUAGES[currentLang];
+}
+
 const photoList = document.getElementById('photoList');
 const fileInput = document.getElementById('fileInput');
 let filesArr = [];
@@ -46,12 +66,14 @@ fileInput.onchange = async (e) => {
 };
 
 document.querySelector('.photo-add').onclick = () => {
+  const lang = getLang();
   if(filesArr.length < 5) fileInput.click();
-  else alert("Максимум 5 фото");
+  else alert(lang.max_5_photos);
 };
 
 document.getElementById('adForm').onsubmit = (e) => {
   e.preventDefault();
+  const lang = getLang();
   const fd = new FormData(e.target);
   
   const newPost = {
@@ -70,10 +92,10 @@ document.getElementById('adForm').onsubmit = (e) => {
     const posts = JSON.parse(localStorage.getItem('spectrum_posts')) || [];
     posts.push(newPost);
     localStorage.setItem('spectrum_posts', JSON.stringify(posts));
-    alert("Объявление опубликовано!");
+    alert(lang.ad_published);
     window.location.href = 'index.html';
   } catch (err) {
-    alert("Ошибка: Слишком много фото. Очистите старые объявления или добавьте меньше фото.");
+    alert(lang.error_too_many_photos);
     console.error(err);
   }
 };
