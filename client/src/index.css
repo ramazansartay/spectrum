@@ -29,12 +29,11 @@
   --radius: 0.75rem;
   
   --header-bg: 220 36% 12%; /* Darker Blue from image #101827 approx */
-  --primary: 201 100% 60%; /* Logo blue #32B6FF */
 }
 
 @layer base {
   * {
-    @apply border-border;
+    border-color: hsl(var(--border));
   }
   body {
     @apply bg-slate-50 text-foreground antialiased font-sans;
