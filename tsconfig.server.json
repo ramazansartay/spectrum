@@ -1,9 +1,21 @@
 {
-  "extends": "./tsconfig.json",
   "compilerOptions": {
+    "strict": true,
+    "lib": ["esnext"],
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./client/src/*"],
+      "@shared/*": ["./shared/*"]
+    },
     "module": "CommonJS",
+    "moduleResolution": "node",
     "outDir": "dist",
-    "noEmit": false
+    "noEmit": false,
+    "allowImportingTsExtensions": false,
+    "jsx": "preserve"
   },
-  "include": ["server"]
+  "include": ["server/**/*", "shared/**/*"],
+  "exclude": ["node_modules", "build", "dist", "**/*.test.ts", "client"]
 }
