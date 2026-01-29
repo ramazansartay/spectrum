@@ -1,6 +1,6 @@
 import { Response } from "express";
 import { db } from "../db";
-import { users } from "@shared/schema";
+import * as schema from "@shared/schema";
 import { AuthRequest } from "../middleware/auth";
 import { eq } from "drizzle-orm";
 import { api } from "@shared/routes";
@@ -10,7 +10,7 @@ export async function me(req: AuthRequest, res: Response) {
   if (!req.userId) return res.status(401).json({ message: "Unauthorized" });
 
   const user = await db.query.users.findFirst({
-    where: eq(users.id, req.userId),
+    where: eq(schema.users.id, req.userId),
     columns: { id: true, name: true, email: true, createdAt: true },
   });
 
@@ -24,7 +24,7 @@ export async function me(req: AuthRequest, res: Response) {
 export async function get(req: AuthRequest, res: Response) {
   const id = req.params.id;
   const user = await db.query.users.findFirst({
-    where: eq(users.id, id),
+    where: eq(schema.users.id, id),
     columns: { id: true, name: true, createdAt: true },
   });
 
@@ -40,9 +40,9 @@ export async function update(req: AuthRequest, res: Response) {
     if (!req.userId) return res.status(401).json({ message: "Unauthorized" });
     const input = api.users.update.input.parse(req.body);
 
-    const [updatedUser] = await db.update(users)
+    const [updatedUser] = await db.update(schema.users)
       .set(input)
-      .where(eq(users.id, req.userId))
+      .where(eq(schema.users.id, req.userId))
       .returning({ id: true, name: true, email: true });
       
     if (!updatedUser) {
