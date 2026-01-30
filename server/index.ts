@@ -3,14 +3,16 @@ import express from 'express';
 import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { router } from './routes.ts';
-import { initializeSocket } from './socket.ts';
-import { setupVite } from './vite.ts';
+import { createServer } from 'http';
+import { router } from './routes.js';
+import { initializeSocket } from './socket.js';
+import { setupVite } from './vite.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+const server = createServer(app);
 
 app.use(cors());
 app.use(express.json());
@@ -25,14 +27,14 @@ if (process.env.NODE_ENV !== 'production') {
 
 // Статические файлы и SPA в режиме production
 if (process.env.NODE_ENV === 'production') {
-  const publicPath = path.resolve(__dirname, 'public');
+  const publicPath = path.join(__dirname, '..', 'public');
   app.use(express.static(publicPath));
   app.get('*', (req, res) => {
-    res.sendFile(path.resolve(publicPath, 'index.html'));
+    res.sendFile(path.join(publicPath, 'index.html'));
   });
 }
 
-const server = initializeSocket(app);
+initializeSocket(server);
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
