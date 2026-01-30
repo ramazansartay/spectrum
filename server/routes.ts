@@ -1,6 +1,6 @@
 import type { Express } from "express";
 import { Server } from "http";
-import { api } from "@shared/routes";
+import { api } from "../shared/routes.js";
 import { authMiddleware } from "./middleware/auth.js";
 import { upload } from "./storage.js";
 

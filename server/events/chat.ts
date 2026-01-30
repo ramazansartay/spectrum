@@ -1,5 +1,5 @@
 import { Server, Socket } from "socket.io";
-import { getMessages, sendMessage } from "../controllers/chats.js";
+import * as chatController from "../controllers/chats.js";
 
 export function handleChat(socket: Socket, io: Server) {
   socket.on("chat:join", (chatId: string) => {
@@ -14,7 +14,7 @@ export function handleChat(socket: Socket, io: Server) {
 
   socket.on("chat:message", async (data: { chatId: string; message: string; senderId: string }) => {
     try {
-      const newMessage = await sendMessage(data.chatId, data.message, data.senderId);
+      const newMessage = await chatController.sendMessage(data.chatId, data.message, data.senderId);
       io.to(data.chatId).emit("chat:message", newMessage);
     } catch (error) {
       console.error("Error sending message:", error);
@@ -25,7 +25,7 @@ export function handleChat(socket: Socket, io: Server) {
 
   socket.on("chat:history", async (chatId: string) => {
     try {
-      const messages = await getMessages(chatId);
+      const messages = await chatController.getMessages(chatId);
       socket.emit("chat:history", messages);
     } catch (error) {
       console.error("Error fetching chat history:", error);

@@ -3,7 +3,7 @@ import { createServer } from "http";
 import cors from "cors";
 import session from "express-session";
 import connectPgSimple from "connect-pg-simple";
-import { liquid } from "@shared/liquid";
+import { liquid } from "../shared/liquid.js";
 import { registerRoutes } from "./routes.js";
 import { initializeSocket } from "./socket.js";
 

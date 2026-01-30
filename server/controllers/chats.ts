@@ -61,54 +61,42 @@ export async function get(req: AuthRequest, res: Response) {
 }
 
 // Get messages for a chat
-export async function getMessages(req: AuthRequest, res: Response) {
-    if (!req.userId) return res.status(401).json({ message: "Unauthorized" });
-    const chatId = Number(req.params.id);
-
+export async function getMessages(chatId: number) {
     // First, verify user has access to this chat
     const chat = await db.query.chats.findFirst({
-        where: and(
-            eq(schema.chats.id, chatId),
-            or(eq(schema.chats.buyerId, req.userId), eq(schema.chats.sellerId, req.userId))
-        )
+        where: eq(schema.chats.id, chatId),
     });
 
     if (!chat) {
-        return res.status(404).json({ message: "Chat not found or you don't have access" });
+        throw new Error("Chat not found or you don\'t have access");
     }
 
     const messageList = await db.query.messages.findMany({
         where: eq(schema.messages.chatId, chatId),
         orderBy: (messages, { asc }) => [asc(messages.createdAt)],
     });
-    res.json(messageList);
+    return messageList;
 }
 
 // Send a message in a chat
-export async function sendMessage(req: AuthRequest, res: Response) {
-    if (!req.userId) return res.status(401).json({ message: "Unauthorized" });
-    const chatId = Number(req.params.id);
-    const { content } = api.chats.sendMessage.input.parse(req.body);
-
+export async function sendMessage(chatId: number, content: string, senderId: number) {
      // Verify user has access to this chat
     const chat = await db.query.chats.findFirst({
         where: and(
             eq(schema.chats.id, chatId),
-            or(eq(schema.chats.buyerId, req.userId), eq(schema.chats.sellerId, req.userId))
+            or(eq(schema.chats.buyerId, senderId), eq(schema.chats.sellerId, senderId))
         )
     });
 
     if (!chat) {
-        return res.status(404).json({ message: "Chat not found or you don't have access" });
+        throw new Error("Chat not found or you don\'t have access");
     }
 
     const newMessage = await db.insert(schema.messages).values({
         chatId,
-        senderId: req.userId,
+        senderId: senderId,
         content,
     }).returning();
 
-    // Here you would typically broadcast the message via WebSockets
-
-    res.status(201).json(newMessage[0]);
+    return newMessage[0];
 }
