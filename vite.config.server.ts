@@ -14,7 +14,7 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: 'dist',
+    outDir: 'dist/server',
     ssr: 'server/index.ts',
     emptyOutDir: false,
   },
