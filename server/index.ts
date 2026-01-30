@@ -28,7 +28,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 // Production static server
 if (process.env.NODE_ENV === 'production') {
-  const root = path.join(__dirname, ".."); // The root is now the `dist` folder
+  const root = __dirname; // The root is the `dist` folder itself
 
   // Log the existence of index.html and directories for debugging
   if (!fs.existsSync(root)) {
