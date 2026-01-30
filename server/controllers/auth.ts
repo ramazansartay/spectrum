@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { db } from "../db";
-import * as schema from "@shared/schema";
-import { api } from "@shared/routes";
+import { db } from "../db.js";
+import * as schema from "@shared/schema.js";
+import { api } from "@shared/routes.js";
 import { createId } from "@paralleldrive/cuid2";
 import { eq } from "drizzle-orm";
 import jwt from "jsonwebtoken";

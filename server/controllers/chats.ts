@@ -1,9 +1,9 @@
 import { Response } from "express";
-import { db } from "../db";
-import * as schema from "@shared/schema";
-import { AuthRequest } from "../middleware/auth";
+import { db } from "../db.js";
+import * as schema from "@shared/schema.js";
+import { AuthRequest } from "../middleware/auth.js";
 import { eq, and, or } from "drizzle-orm";
-import { api } from "@shared/routes";
+import { api } from "@shared/routes.js";
 
 // Internal function to send a message
 export async function _sendMessage(chatId: number, content: string, senderId: string) {
