@@ -5,6 +5,78 @@ import { AuthRequest } from "../middleware/auth";
 import { eq, and, or } from "drizzle-orm";
 import { api } from "@shared/routes";
 
+// Internal function to send a message
+export async function _sendMessage(chatId: number, content: string, senderId: string) {
+    const chat = await db.query.chats.findFirst({
+        where: and(
+            eq(schema.chats.id, chatId),
+            or(eq(schema.chats.buyerId, senderId), eq(schema.chats.sellerId, senderId))
+        )
+    });
+
+    if (!chat) {
+        throw new Error("Chat not found or you don't have access");
+    }
+
+    const newMessage = await db.insert(schema.messages).values({
+        chatId,
+        senderId,
+        content,
+    }).returning();
+
+    return newMessage[0];
+}
+
+// Internal function to get messages for a chat
+export async function _getMessages(chatId: number, userId: string) {
+    const chat = await db.query.chats.findFirst({
+        where: and(
+            eq(schema.chats.id, chatId),
+            or(eq(schema.chats.buyerId, userId), eq(schema.chats.sellerId, userId))
+        )
+    });
+
+    if (!chat) {
+        throw new Error("Chat not found or you don't have access");
+    }
+
+    return db.query.messages.findMany({
+        where: eq(schema.messages.chatId, chatId),
+        orderBy: (messages, { asc }) => [asc(messages.createdAt)],
+    });
+}
+
+
+// Express handler to send a message
+export async function sendMessage(req: AuthRequest, res: Response) {
+    if (!req.userId) return res.status(401).json({ message: "Unauthorized" });
+
+    try {
+        const chatId = Number(req.params.id);
+        const { content } = api.chats.sendMessage.input.parse(req.body);
+        const newMessage = await _sendMessage(chatId, content, req.userId);
+        res.status(201).json(newMessage);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Failed to send message" });
+    }
+}
+
+
+// Express handler to get messages for a chat
+export async function getMessages(req: AuthRequest, res: Response) {
+    if (!req.userId) return res.status(401).json({ message: "Unauthorized" });
+
+    try {
+        const chatId = Number(req.params.id);
+        const messages = await _getMessages(chatId, req.userId);
+        res.json(messages);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Failed to fetch messages" });
+    }
+}
+
 // List all chats for the current user
 export async function list(req: AuthRequest, res: Response) {
   if (!req.userId) return res.status(401).json({ message: "Unauthorized" });
@@ -24,7 +96,10 @@ export async function create(req: AuthRequest, res: Response) {
     const listing = await db.query.listings.findFirst({ where: eq(schema.listings.id, listingId) });
     if (!listing) return res.status(404).json({ message: "Listing not found" });
 
-    // Check if a chat already exists
+    if (listing.userId === req.userId) {
+        return res.status(400).json({ message: "You cannot start a chat with yourself." });
+    }
+    
     let chat = await db.query.chats.findFirst({
         where: and(eq(schema.chats.listingId, listingId), eq(schema.chats.buyerId, req.userId))
     });
@@ -58,45 +133,4 @@ export async function get(req: AuthRequest, res: Response) {
     return res.status(404).json({ message: "Chat not found" });
   }
   res.json(chat);
-}
-
-// Get messages for a chat
-export async function getMessages(chatId: number) {
-    // First, verify user has access to this chat
-    const chat = await db.query.chats.findFirst({
-        where: eq(schema.chats.id, chatId),
-    });
-
-    if (!chat) {
-        throw new Error("Chat not found or you don\'t have access");
-    }
-
-    const messageList = await db.query.messages.findMany({
-        where: eq(schema.messages.chatId, chatId),
-        orderBy: (messages, { asc }) => [asc(messages.createdAt)],
-    });
-    return messageList;
-}
-
-// Send a message in a chat
-export async function sendMessage(chatId: number, content: string, senderId: number) {
-     // Verify user has access to this chat
-    const chat = await db.query.chats.findFirst({
-        where: and(
-            eq(schema.chats.id, chatId),
-            or(eq(schema.chats.buyerId, senderId), eq(schema.chats.sellerId, senderId))
-        )
-    });
-
-    if (!chat) {
-        throw new Error("Chat not found or you don\'t have access");
-    }
-
-    const newMessage = await db.insert(schema.messages).values({
-        chatId,
-        senderId: senderId,
-        content,
-    }).returning();
-
-    return newMessage[0];
 }

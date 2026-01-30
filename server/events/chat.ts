@@ -1,31 +1,53 @@
 import { Server, Socket } from "socket.io";
-import * as chatController from "../controllers/chats.js";
+import { _sendMessage, _getMessages } from "../controllers/chats.js";
+import { z } from "zod";
+
+const ChatMessageSchema = z.object({
+  chatId: z.number(),
+  message: z.string(),
+  senderId: z.string(),
+});
+
+const ChatIdSchema = z.number();
 
 export function handleChat(socket: Socket, io: Server) {
-  socket.on("chat:join", (chatId: string) => {
-    socket.join(chatId);
-    console.log(`User joined chat: ${chatId}`);
-  });
+  const userId = socket.handshake.auth.userId as string; 
 
-  socket.on("chat:leave", (chatId: string) => {
-    socket.leave(chatId);
-    console.log(`User left chat: ${chatId}`);
-  });
-
-  socket.on("chat:message", async (data: { chatId: string; message: string; senderId: string }) => {
+  socket.on("chat:join", (chatId: unknown) => {
     try {
-      const newMessage = await chatController.sendMessage(data.chatId, data.message, data.senderId);
-      io.to(data.chatId).emit("chat:message", newMessage);
+      const parsedChatId = ChatIdSchema.parse(chatId);
+      socket.join(String(parsedChatId));
+      console.log(`User ${userId} joined chat: ${parsedChatId}`);
+    } catch (error) {
+      console.error("Invalid chatId for chat:join:", error);
+    }
+  });
+
+  socket.on("chat:leave", (chatId: unknown) => {
+    try {
+      const parsedChatId = ChatIdSchema.parse(chatId);
+      socket.leave(String(parsedChatId));
+      console.log(`User ${userId} left chat: ${parsedChatId}`);
+    } catch (error) {
+      console.error("Invalid chatId for chat:leave:", error);
+    }
+  });
+
+  socket.on("chat:message", async (data: unknown) => {
+    try {
+      const { chatId, message, senderId } = ChatMessageSchema.parse(data);
+      const newMessage = await _sendMessage(chatId, message, senderId);
+      io.to(String(chatId)).emit("chat:message", newMessage);
     } catch (error) {
       console.error("Error sending message:", error);
-      // Optionally, emit an error event back to the sender
       socket.emit("chat:error", { message: "Failed to send message" });
     }
   });
 
-  socket.on("chat:history", async (chatId: string) => {
+  socket.on("chat:history", async (chatId: unknown) => {
     try {
-      const messages = await chatController.getMessages(chatId);
+      const parsedChatId = ChatIdSchema.parse(chatId);
+      const messages = await _getMessages(parsedChatId, userId);
       socket.emit("chat:history", messages);
     } catch (error) {
       console.error("Error fetching chat history:", error);
