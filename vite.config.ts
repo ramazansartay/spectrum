@@ -1,32 +1,17 @@
 
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
-import path from "path";
-import { fileURLToPath } from 'url';
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import path from 'path';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
+// Конфигурация для КЛИЕНТА
 export default defineConfig({
-  plugins: [
-    react(),
-  ],
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "client", "src"),
-      "@shared": path.resolve(__dirname, "shared"),
-      "@assets": path.resolve(__dirname, "attached_assets"),
-    },
-  },
-  root: path.resolve(__dirname, "client"),
+  plugins: [react()],
+  // Корень проекта - 'client', все пути внутри него
+  root: 'client', 
   build: {
-    outDir: path.resolve(__dirname, "dist", "public"), // Output to dist/public
-    emptyOutDir: true,
-  },
-  server: {
-    fs: {
-      strict: true,
-      deny: ["**/.*"],
-    },
+    // Выходная директория относительно корня проекта
+    outDir: '../dist/public',
+    // Очищать папку public перед каждой сборкой клиента
+    emptyOutDir: true, 
   },
 });

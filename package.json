@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "npm run dev:server",
     "dev:server": "vite -c vite.config.server.ts",
-    "build": "npm run build:client && npm run build:server",
+    "build": "npm run build:client && npm run build:server && node scripts/verify-build.js",
     "build:client": "vite build",
     "build:server": "vite build -c vite.config.server.ts",
     "start": "node dist/index.js",

@@ -7,49 +7,32 @@ import { createServer } from 'http';
 import { router } from './routes.js';
 import { initializeSocket } from './socket.js';
 import { setupVite } from './vite.js';
-import fs from 'fs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const isProduction = process.env.NODE_ENV === 'production';
 
 const app = express();
 const server = createServer(app);
 
 app.use(cors());
 app.use(express.json());
-
-// API routes
 app.use('/api', router);
 
-// Vite dev middleware
-if (process.env.NODE_ENV !== 'production') {
-  setupVite(server, app);
-}
+if (isProduction) {
+  // В production сборке, __dirname будет 'dist'. Клиентские файлы лежат в 'dist/public'.
+  const clientBuildPath = path.resolve(__dirname, 'public');
+  
+  // 1. Раздаем статику (CSS, JS, images) из 'dist/public'
+  app.use(express.static(clientBuildPath));
 
-// Production static server
-if (process.env.NODE_ENV === 'production') {
-  const publicPath = path.join(__dirname, 'public');
-
-  // Log the existence of index.html and directories for debugging
-  if (!fs.existsSync(publicPath)) {
-    console.error(`[server] Static root not found: ${publicPath}`);
-  } else if (!fs.existsSync(path.join(publicPath, "index.html"))) {
-    console.error(`[server] index.html not found under: ${publicPath}`);
-  }
-
-  app.use(express.static(publicPath));
-
-  // SPA fallback
-  app.get("*", (req, res) => {
-    const indexPath = path.join(publicPath, "index.html");
-    if (fs.existsSync(indexPath)) {
-      res.sendFile(indexPath);
-    } else {
-      // Clear error in logs and return 500 so the deploy doesn't "mask" the problem
-      console.error(`[server] Cannot serve index.html — file missing: ${indexPath}`);
-      res.status(500).send("index.html missing on server. Check build output.");
-    }
+  // 2. Для всех остальных запросов отдаем главный HTML-файл (SPA fallback)
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(clientBuildPath, 'index.html'));
   });
+} else {
+  // В dev-режиме Vite сам обрабатывает статику и index.html
+  setupVite(server, app);
 }
 
 initializeSocket(server);
