@@ -40,16 +40,16 @@ export async function update(req: AuthRequest, res: Response) {
     if (!req.userId) return res.status(401).json({ message: "Unauthorized" });
     const input = api.users.update.input.parse(req.body);
 
-    const [updatedUser] = await db.update(schema.users)
+    const updatedResult = await db.update(schema.users)
       .set(input)
       .where(eq(schema.users.id, req.userId))
-      .returning({ id: true, name: true, email: true });
+      .returning({ id: schema.users.id, name: schema.users.name, email: schema.users.email });
       
-    if (!updatedUser) {
+    if (updatedResult.length === 0) {
         return res.status(404).json({ message: "User not found" });
     }
 
-    res.json(updatedUser);
+    res.json(updatedResult[0]);
   } catch (error) {
     res.status(400).json({ message: "Invalid input" });
   }

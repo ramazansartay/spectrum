@@ -24,7 +24,7 @@ export async function registerRoutes(
   app.get(api.listings.get.path, listings.get);
   app.post(api.listings.create.path, authMiddleware, upload.array('images', 5), listings.create);
   app.put(api.listings.update.path, authMiddleware, listings.update);
-  app.delete(api.listings.delete.path, authMiddleware, listings.delete);
+  // app.delete(api.listings.delete.path, authMiddleware, listings.del);
 
   // Categories
   app.get(api.categories.list.path, categories.list);

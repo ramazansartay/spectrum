@@ -30,11 +30,12 @@ export async function create(req: AuthRequest, res: Response) {
     });
 
     if (!chat) {
-        [chat] = await db.insert(schema.chats).values({
+        const newChat = await db.insert(schema.chats).values({
             listingId,
             buyerId: req.userId,
             sellerId: listing.userId,
         }).returning();
+        chat = newChat[0];
     }
 
     res.status(201).json(chat);
@@ -101,7 +102,7 @@ export async function sendMessage(req: AuthRequest, res: Response) {
         return res.status(404).json({ message: "Chat not found or you don't have access" });
     }
 
-    const [newMessage] = await db.insert(schema.messages).values({
+    const newMessage = await db.insert(schema.messages).values({
         chatId,
         senderId: req.userId,
         content,
@@ -109,5 +110,5 @@ export async function sendMessage(req: AuthRequest, res: Response) {
 
     // Here you would typically broadcast the message via WebSockets
 
-    res.status(201).json(newMessage);
+    res.status(201).json(newMessage[0]);
 }
