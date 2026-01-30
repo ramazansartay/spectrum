@@ -3,7 +3,7 @@ import { createServer } from "http";
 import cors from "cors";
 import session from "express-session";
 import connectPgSimple from "connect-pg-simple";
-import { liquid } from "@shared/liquid";
+import { Liquid } from "liquidjs";
 import { registerRoutes } from "./routes.js";
 import { initializeSocket } from "./socket.js";
 
@@ -11,6 +11,7 @@ async function main() {
   const app = express();
   const httpServer = createServer(app);
   const PgStore = connectPgSimple(session);
+  const liquid = new Liquid();
 
   app.use(express.static("public"));
   app.use(express.json());
