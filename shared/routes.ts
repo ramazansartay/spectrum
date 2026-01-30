@@ -24,6 +24,7 @@ const listings = {
       location: z.string(),
       categoryId: z.number(),
       images: z.array(z.string()),
+      isNegotiable: z.boolean().optional(),
     }),
   },
   update: {
