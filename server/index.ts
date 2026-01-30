@@ -17,18 +17,19 @@ const server = createServer(app);
 app.use(cors());
 app.use(express.json());
 
-// API-роуты
+// API routes
 app.use('/api', router);
 
-// Настройка Vite в режиме разработки
+// Vite dev middleware
 if (process.env.NODE_ENV !== 'production') {
   setupVite(server, app);
-}
+} 
 
-// Статические файлы и SPA в режиме production
+// Production static server
 if (process.env.NODE_ENV === 'production') {
   const publicPath = path.join(__dirname, 'public');
   app.use(express.static(publicPath));
+
   app.get('*', (req, res) => {
     res.sendFile(path.join(publicPath, 'index.html'));
   });
@@ -38,5 +39,5 @@ initializeSocket(server);
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-  console.log(`Сервер запущен на порту ${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });
