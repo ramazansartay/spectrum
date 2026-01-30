@@ -3,17 +3,23 @@ import { createServer } from "http";
 import cors from "cors";
 import session from "express-session";
 import connectPgSimple from "connect-pg-simple";
-import { Liquid } from "liquidjs";
 import { registerRoutes } from "./routes.js";
 import { initializeSocket } from "./socket.js";
 import path from "path";
+import { fileURLToPath } from "url";
+
+// Since we are using ES Modules, __dirname is not available directly.
+// This is the standard way to derive it.
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 async function main() {
   const app = express();
   const httpServer = createServer(app);
   const PgStore = connectPgSimple(session);
 
-  const publicPath = path.join(process.cwd(), 'dist', 'public');
+  // Serve static files from the 'public' directory relative to the 'dist' folder
+  const publicPath = path.join(__dirname, 'public');
 
   app.use(express.static(publicPath));
   app.use(express.json());
