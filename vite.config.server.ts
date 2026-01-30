@@ -17,6 +17,7 @@ export default defineConfig({
   build: {
     outDir: path.resolve(__dirname, "dist"), // Also output to dist
     ssr: true,
+    emptyOutDir: false,
     rollupOptions: {
       input: {
         index: path.resolve(__dirname, "server", "index.ts"),

@@ -28,20 +28,20 @@ if (process.env.NODE_ENV !== 'production') {
 
 // Production static server
 if (process.env.NODE_ENV === 'production') {
-  const root = __dirname; // The root is the `dist` folder itself
+  const publicPath = path.join(__dirname, 'public');
 
   // Log the existence of index.html and directories for debugging
-  if (!fs.existsSync(root)) {
-    console.error(`[server] Static root not found: ${root}`);
-  } else if (!fs.existsSync(path.join(root, "index.html"))) {
-    console.error(`[server] index.html not found under: ${root}`);
+  if (!fs.existsSync(publicPath)) {
+    console.error(`[server] Static root not found: ${publicPath}`);
+  } else if (!fs.existsSync(path.join(publicPath, "index.html"))) {
+    console.error(`[server] index.html not found under: ${publicPath}`);
   }
 
-  app.use(express.static(root));
+  app.use(express.static(publicPath));
 
   // SPA fallback
   app.get("*", (req, res) => {
-    const indexPath = path.join(root, "index.html");
+    const indexPath = path.join(publicPath, "index.html");
     if (fs.existsSync(indexPath)) {
       res.sendFile(indexPath);
     } else {
