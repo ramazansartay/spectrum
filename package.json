@@ -78,7 +78,7 @@
     "nodemailer": "^6.4.15",
     "openai": "^4.47.1",
     "passport": "^0.7.0",
-    "passport-local": "^1.0.9",
+    "passport-local": "^1.0.0",
     "pg": "^8.11.5",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
