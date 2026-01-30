@@ -1,21 +1,17 @@
-import { defineConfig } from "vite";
-import path from "path";
-import { fileURLToPath } from 'url';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import { defineConfig } from 'vite';
+import { resolve } from 'path';
 
 export default defineConfig({
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "client", "src"),
-      "@shared": path.resolve(__dirname, "shared"),
-      "@assets": path.resolve(__dirname, "attached_assets"),
-    },
-  },
   build: {
-    outDir: 'dist',
-    ssr: 'server/index.ts',
-    emptyOutDir: false,
+    // Relative to the root
+    outDir: 'dist/server',
+    ssr: true,
+    rollupOptions: {
+      input: {
+        // Entry point for the server
+        index: resolve(__dirname, 'server', 'index.ts'),
+      },
+    },
   },
 });

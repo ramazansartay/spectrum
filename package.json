@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "main": "dist/index.js",
+  "main": "dist/server/index.js",
   "engines": {
     "node": "20.x"
   },
@@ -12,7 +12,7 @@
     "build:client": "vite build --outDir dist/public",
     "build:server": "vite build -c vite.config.server.ts",
     "build": "npm run build:client && npm run build:server",
-    "start": "node dist/index.js",
+    "start": "node dist/server/index.js",
     "test": "vitest",
     "drizzle:generate": "drizzle-kit generate:pg",
     "drizzle:migrate": "tsx script/migrate.ts",
