@@ -10,13 +10,8 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: path.resolve(import.meta.dirname, "dist/server"),
+    outDir: 'dist',
     emptyOutDir: true,
-    lib: {
-      entry: path.resolve(import.meta.dirname, "server/index.ts"),
-      name: "server",
-      fileName: "index",
-      formats: ["es"],
-    },
+    ssr: 'server/index.ts',
   },
 });
