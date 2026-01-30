@@ -22,12 +22,12 @@ app.use('/api', router);
 
 // Настройка Vite в режиме разработки
 if (process.env.NODE_ENV !== 'production') {
-  setupVite(app);
+  setupVite(server, app);
 }
 
 // Статические файлы и SPA в режиме production
 if (process.env.NODE_ENV === 'production') {
-  const publicPath = path.join(__dirname, '..', 'public');
+  const publicPath = path.join(__dirname, 'public');
   app.use(express.static(publicPath));
   app.get('*', (req, res) => {
     res.sendFile(path.join(publicPath, 'index.html'));
