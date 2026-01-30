@@ -28,7 +28,9 @@ if (process.env.NODE_ENV !== 'production') {
 
 // Production static server
 if (process.env.NODE_ENV === 'production') {
-  const root = path.join(process.cwd(), "dist", "public");
+  // The server is running from `dist/server`, so we go up one level to `dist`
+  // and then into `public`.
+  const root = path.join(__dirname, '..', 'public');
 
   // Log the existence of index.html and directories for debugging
   if (!fs.existsSync(root)) {
