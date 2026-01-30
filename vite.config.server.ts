@@ -1,28 +1,31 @@
 
-import { defineConfig } from 'vite';
-import { resolve } from 'path';
+import { defineConfig } from "vite";
+import path from "path";
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = resolve(__filename, '..');
+const __dirname = path.dirname(__filename);
 
 export default defineConfig({
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "client", "src"),
+      "@shared": path.resolve(__dirname, "shared"),
+      "@assets": path.resolve(__dirname, "attached_assets"),
+    },
+  },
   build: {
-    // Relative to the root
-    outDir: 'dist/server',
+    outDir: path.resolve(__dirname, "dist"), // Also output to dist
     ssr: true,
     rollupOptions: {
       input: {
-        // Entry point for the server
-        index: resolve(__dirname, 'server', 'index.ts'),
+        index: path.resolve(__dirname, "server", "index.ts"),
       },
-    },
-  },
-  resolve: {
-    alias: {
-      '@': resolve(__dirname, 'client', 'src'),
-      '@shared': resolve(__dirname, 'shared'),
-      '@assets': resolve(__dirname, 'attached_assets'),
+      output: {
+        entryFileNames: "[name].js",
+        chunkFileNames: "[name].js",
+        assetFileNames: "[name].[ext]",
+      },
     },
   },
 });
