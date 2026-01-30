@@ -2,17 +2,17 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useLocation } from 'wouter';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { insertListingSchema, Category } from '@shared/schema';
-import { useCreateListing, useMe, useCategories } from '@/hooks/api';
-import { Navbar } from '@/components/Navbar';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { insertListingSchema, Category } from '../../../shared/schema.ts';
+import { useCreateListing, useMe, useCategories } from '../hooks/api.ts';
+import { Navbar } from '../components/Navbar.tsx';
+import { Button } from '../components/ui/button.tsx';
+import { Input } from '../components/ui/input.tsx';
+import { Textarea } from '../components/ui/textarea.tsx';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../components/ui/form.tsx';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select.tsx';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card.tsx';
 import { Loader2 } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from '../hooks/use-toast.ts';
 import { z } from 'zod';
 
 const formSchema = insertListingSchema.omit({ userId: true, createdAt: true, id: true, category: true, images: true }).extend({

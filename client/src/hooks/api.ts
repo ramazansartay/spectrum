@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { api as apiSchemas } from '@shared/routes';
-import { api } from '../lib/api';
-import { Listing, Category, User, Chat, Message } from '@shared/schema';
+import { api as apiSchemas } from '../../../shared/routes.ts';
+import { api } from '../lib/api.ts';
+import { Listing, Category, User, Chat, Message } from '../../../shared/schema.ts';
 
 // Custom type for the creation hook, because `images` is a FileList, not string[]
 export type CreateListingInput = {

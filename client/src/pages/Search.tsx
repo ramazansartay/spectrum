@@ -1,15 +1,15 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { Filter, X } from "lucide-react";
-import { Navbar } from "@/components/Navbar";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Slider } from "@/components/ui/slider";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { ListingCard } from "@/components/ListingCard";
-import { useListings } from "@/hooks/api";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Navbar } from "../components/Navbar.tsx";
+import { Button } from "../components/ui/button.tsx";
+import { Input } from "../components/ui/input.tsx";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select.tsx";
+import { Slider } from "../components/ui/slider.tsx";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "../components/ui/sheet.tsx";
+import { ListingCard } from "../components/ListingCard.tsx";
+import { useListings } from "../hooks/api.ts";
+import { Skeleton } from "../components/ui/skeleton.tsx";
 import { useTranslation } from "react-i18next";
 
 export default function SearchPage() {
@@ -43,6 +43,31 @@ export default function SearchPage() {
       category: params.get("category") || prev.category
     }));
   }, [location]);
+
+  const getCategoryTranslationKey = (category: string) => {
+    switch (category) {
+      case "Hubs & Electronics":
+        return "hubsAndElectronics";
+      case "Motors":
+        return "motors";
+      case "Servos":
+        return "servos";
+      case "Structure":
+        return "structure";
+      case "Wheels":
+        return "wheels";
+      case "Sensors":
+        return "sensors";
+      case "Wires":
+        return "wires";
+      case "Tools":
+        return "tools";
+      case "Kits":
+        return "kits";
+      default:
+        return "";
+    }
+  }
 
   const FilterPanel = () => (
     <div className="space-y-6">
@@ -118,7 +143,7 @@ export default function SearchPage() {
           <SelectContent>
             <SelectItem value="recent">{t('newestFirst')}</SelectItem>
             <SelectItem value="price-asc">{t('priceAsc')}</SelectItem>
-            <SelectItem value="price-desc">{t('priceDesc')}</SelectItem>
+            <SelectItem value="price-desc">{t('priceDesc')}</semectItem>
           </SelectContent>
         </Select>
       </div>
@@ -188,7 +213,7 @@ export default function SearchPage() {
               </h2>
               {filters.category !== "all" && (
                 <div className="flex items-center gap-2 px-3 py-1 bg-primary/10 text-primary text-sm font-medium rounded-full">
-                  {t(filters.category.replace(/ & /g, "And").replace(/ /g, "").charAt(0).toLowerCase() + filters.category.slice(1).replace(/ & /g, "And").replace(/ /g, ""))}
+                  {t(getCategoryTranslationKey(filters.category))}
                   <X 
                     className="w-4 h-4 cursor-pointer hover:text-primary/70" 
                     onClick={() => setFilters(prev => ({ ...prev, category: "all" }))}

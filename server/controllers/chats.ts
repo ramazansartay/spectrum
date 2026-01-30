@@ -1,7 +1,7 @@
 import { Response } from "express";
-import { db } from "../db";
+import { db } from "../db.js";
 import * as schema from "@shared/schema";
-import { AuthRequest } from "../middleware/auth";
+import { AuthRequest } from "../middleware/auth.js";
 import { eq, and, or } from "drizzle-orm";
 import { api } from "@shared/routes";
 

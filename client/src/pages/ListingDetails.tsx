@@ -1,13 +1,13 @@
 import { useParams, Link, useLocation } from "wouter";
-import { useListing, useCreateChat, useMe } from "@/hooks/api"; // Updated hook imports
-import { isLoggedIn } from "@/lib/auth-utils";
-import { Navbar } from "@/components/Navbar";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
+import { useListing, useCreateChat, useMe } from "../hooks/api.ts"; // Updated hook imports
+import { isLoggedIn } from "../lib/auth-utils.ts";
+import { Navbar } from "../components/Navbar.tsx";
+import { Button } from "../components/ui/button.tsx";
+import { Badge } from "../components/ui/badge.tsx";
+import { Skeleton } from "../components/ui/skeleton.tsx";
 import { MapPin, User, MessageSquare, ArrowLeft, Share2, Heart } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
-import { timeAgo } from "@/lib/time-ago";
+import { useToast } from "../hooks/use-toast.ts";
+import { timeAgo } from "../lib/time-ago.ts";
 
 export default function ListingDetails() {
   const { id } = useParams();

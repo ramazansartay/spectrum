@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { useChats, useChatMessages, useSendMessage, useMe } from '@/hooks/api';
-import { Navbar } from '@/components/Navbar';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useChats, useChatMessages, useSendMessage, useMe } from '../hooks/api.ts';
+import { Navbar } from '../components/Navbar.tsx';
+import { Button } from '../components/ui/button.tsx';
+import { Input } from '../components/ui/input.tsx';
+import { Avatar, AvatarFallback, AvatarImage } from '../components/ui/avatar.tsx';
 import { Loader2, Send } from 'lucide-react';
-import { timeAgo } from '@/lib/time-ago';
-import { cn } from '@/lib/utils';
+import { timeAgo } from '../lib/time-ago.ts';
+import { cn } from '../lib/utils.ts';
 
 export default function ChatPage() {
   const [activeChatId, setActiveChatId] = useState<number | null>(null);

@@ -2,14 +2,14 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { Search, Zap, Move, Box, Disc, Radio, Link as LinkIcon, Wrench, Package, Cpu } from "lucide-react";
-import { Navbar } from "@/components/Navbar";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { CategoryCard } from "@/components/CategoryCard";
-import { ListingCard } from "@/components/ListingCard";
-import { useListings, useCategories } from "@/hooks/api";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Category } from "@shared/schema";
+import { Navbar } from "../components/Navbar.tsx";
+import { Button } from "../components/ui/button.tsx";
+import { Input } from "../components/ui/input.tsx";
+import { CategoryCard } from "../components/CategoryCard.tsx";
+import { ListingCard } from "../components/ListingCard.tsx";
+import { useListings, useCategories } from "../hooks/api.ts";
+import { Skeleton } from "../components/ui/skeleton.tsx";
+import { Category } from "../../../shared/schema.ts";
 import { useTranslation } from "react-i18next";
 
 const categoryStyleMap: { [key: string]: { icon: React.ElementType, color: string } } = {

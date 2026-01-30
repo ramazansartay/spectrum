@@ -1,17 +1,17 @@
 import { Switch, Route } from "wouter";
-import { queryClient } from "./lib/queryClient";
+import { queryClient } from "./lib/queryClient.js";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { Toaster } from "@/components/ui/toaster";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import NotFound from "@/pages/not-found";
-import Home from "@/pages/Home";
-import SearchPage from "@/pages/Search";
-import CreateListing from "@/pages/CreateListing";
-import Profile from "@/pages/Profile";
-import Chat from "@/pages/Chat";
-import ListingDetails from "@/pages/ListingDetails";
-import LoginPage from "@/pages/Login"; // Import Login page
-import RegisterPage from "@/pages/Register"; // Import Register page
+import { Toaster } from "./components/ui/toaster.tsx";
+import { TooltipProvider } from "./components/ui/tooltip.tsx";
+import NotFound from "./pages/not-found.tsx";
+import Home from "./pages/Home.tsx";
+import SearchPage from "./pages/Search.tsx";
+import CreateListing from "./pages/CreateListing.tsx";
+import Profile from "./pages/Profile.tsx";
+import Chat from "./pages/Chat.tsx";
+import ListingDetails from "./pages/ListingDetails.tsx";
+import LoginPage from "./pages/Login.tsx"; // Import Login page
+import RegisterPage from "./pages/Register.tsx"; // Import Register page
 
 function Router() {
   return (

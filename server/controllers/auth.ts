@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { db } from "../db";
+import { db } from "../db.js";
 import * as schema from "@shared/schema";
 import { api } from "@shared/routes";
 import { createId } from "@paralleldrive/cuid2";

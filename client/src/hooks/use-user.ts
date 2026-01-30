@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { api } from "@shared/routes";
+import { api } from "../../../shared/routes.ts";
 import { z } from "zod";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "../hooks/use-toast.ts";
 
 type UpdateUserInput = z.infer<typeof api.users.update.input>;
 

@@ -1,8 +1,8 @@
 import { Response } from "express";
-import { db } from "../db";
+import { db } from "../db.js";
 import * as schema from "@shared/schema";
 import { api } from "@shared/routes";
-import { AuthRequest } from "../middleware/auth";
+import { AuthRequest } from "../middleware/auth.js";
 import { eq, and, desc, like, gte, lte } from "drizzle-orm";
 
 // List all listings with filters

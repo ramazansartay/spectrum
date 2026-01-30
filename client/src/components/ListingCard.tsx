@@ -1,7 +1,7 @@
 import { Link } from "wouter";
 import { MapPin, Tag } from "lucide-react";
 import type { Listing } from "@shared/schema";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "../components/ui/badge.tsx";
 
 interface ListingCardProps {
   listing: Listing;

@@ -1,6 +1,6 @@
-import { api as apiSchemas } from "@shared/routes";
-import { api } from "./api";
-import { InsertUser } from "@shared/schema";
+import { api as apiSchemas } from "../../../shared/routes.ts";
+import { api } from "./api.ts";
+import { InsertUser } from "../../../shared/schema.ts";
 
 const TOKEN_KEY = 'authToken';
 

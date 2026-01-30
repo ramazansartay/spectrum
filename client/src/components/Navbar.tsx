@@ -1,9 +1,9 @@
 import { Link } from "wouter";
-import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Button } from "../components/ui/button.tsx";
+import { Sheet, SheetContent, SheetTrigger } from "../components/ui/sheet.tsx";
 import { Menu, MessageSquare, User, LogOut } from "lucide-react";
-import { isLoggedIn, logout } from "@/lib/auth-utils";
-import { useMe } from "@/hooks/api";
+import { isLoggedIn, logout } from "../lib/auth-utils.ts";
+import { useMe } from "../hooks/api.ts";
 import { useTranslation } from "react-i18next";
 
 export function Navbar() {
