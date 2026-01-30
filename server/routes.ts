@@ -1,14 +1,14 @@
 import type { Express } from "express";
 import { Server } from "http";
 import { api } from "@shared/routes";
-import { authMiddleware } from "./middleware/auth";
-import { upload } from "./storage";
+import { authMiddleware } from "./middleware/auth.js";
+import { upload } from "./storage.js";
 
-import * as auth from "./controllers/auth";
-import * as listings from "./controllers/listings";
-import * as categories from "./controllers/categories";
-import * as users from "./controllers/users";
-import * as chats from "./controllers/chats";
+import * as auth from "./controllers/auth.js";
+import * as listings from "./controllers/listings.js";
+import * as categories from "./controllers/categories.js";
+import * as users from "./controllers/users.js";
+import * as chats from "./controllers/chats.js";
 
 export async function registerRoutes(
   httpServer: Server,
@@ -33,7 +33,7 @@ export async function registerRoutes(
   app.get(api.users.me.path, authMiddleware, users.me);
   app.get(api.users.get.path, users.get);
   app.put(api.users.update.path, authMiddleware, users.update);
-
+	
   // Chats
   app.get(api.chats.list.path, authMiddleware, chats.list);
   app.post(api.chats.create.path, authMiddleware, chats.create);
