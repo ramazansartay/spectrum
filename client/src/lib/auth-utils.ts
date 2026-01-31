@@ -1,6 +1,6 @@
 import { api as apiSchemas } from "@shared/routes";
 import { api } from "./api";
-import { InsertUser } from "@shared/schema";
+import { InsertUser } from "@shared/types";
 
 const TOKEN_KEY = 'authToken';
 

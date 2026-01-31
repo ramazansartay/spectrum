@@ -23,6 +23,8 @@ export default defineConfig({
       "@": path.resolve(__dirname, "client", "src"),
       "@shared": path.resolve(__dirname, "shared"),
       "@assets": path.resolve(__dirname, "attached_assets"),
+      // FIX: Redirect the problematic import to the correct modern JSX runtime
+      "./cjs/react-jsx-runtime.production.min.js": "react/jsx-runtime",
     },
   },
 });

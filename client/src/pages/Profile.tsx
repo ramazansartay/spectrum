@@ -11,7 +11,7 @@ import { Loader2, Settings, LogOut, Package } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { insertUserSchema } from "@shared/schema";
+import { insertUserSchema } from "@shared/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useAuth } from "@/hooks/use-auth";

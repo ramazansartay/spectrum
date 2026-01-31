@@ -1,43 +1,25 @@
-export type Category = {
-  id: number;
-  name: string;
-};
+import { z } from "zod";
+import { listings, users } from "./schema";
+import { createInsertSchema } from "drizzle-zod";
 
-export type User = {
-  id: string;
-  name?: string | null;
-  email: string;
-  passwordHash: string;
-  createdAt?: Date | null;
-};
 
-export type Listing = {
-  id: number;
-  title: string;
-  description: string;
-  price: string;
-  location: string;
-  contactInfo?: string | null;
-  images?: string[] | null;
-  isNegotiable?: boolean | null;
-  userId: string;
-  categoryId: number;
-  createdAt?: Date | null;
-};
+// Zod Schemas for validation
+export const insertListingSchema = createInsertSchema(listings).omit({ 
+  id: true, 
+  createdAt: true,
+  userId: true 
+});
 
-export type Chat = {
-  id: number;
-  listingId?: number | null;
-  buyerId?: string | null;
-  sellerId?: string | null;
-  createdAt?: Date | null;
-};
+export const insertUserSchema = createInsertSchema(users, {
+  email: z.string().email(),
+}).omit({ id: true, createdAt: true });
 
-export type Message = {
-  id: number;
-  chatId: number;
-  senderId: string;
-  content: string;
-  createdAt?: Date | null;
-  isRead?: boolean | null;
-};
+// Types
+export type User = typeof users.$inferSelect;
+export type Listing = typeof listings.$inferSelect;
+export type Category = typeof categories.$inferSelect;
+export type Chat = typeof chats.$inferSelect;
+export type Message = typeof messages.$inferSelect;
+
+export type InsertListing = z.infer<typeof insertListingSchema>;
+export type InsertUser = z.infer<typeof insertUserSchema>;

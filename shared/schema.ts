@@ -1,6 +1,4 @@
 import { pgTable, text, serial, integer, boolean, timestamp, varchar } from "drizzle-orm/pg-core";
-import { createInsertSchema } from "drizzle-zod";
-import { z } from "zod";
 
 // Users Table
 export const users = pgTable("users", {
@@ -50,26 +48,3 @@ export const messages = pgTable("messages", {
   createdAt: timestamp("created_at").defaultNow(),
   isRead: boolean("is_read").default(false),
 });
-
-
-// Zod Schemas for validation
-export const insertListingSchema = createInsertSchema(listings).omit({ 
-  id: true, 
-  createdAt: true,
-  userId: true 
-});
-
-export const insertUserSchema = createInsertSchema(users, {
-  email: z.string().email(),
-}).omit({ id: true, createdAt: true });
-
-
-// Types
-export type User = typeof users.$inferSelect;
-export type Listing = typeof listings.$inferSelect;
-export type Category = typeof categories.$inferSelect;
-export type Chat = typeof chats.$inferSelect;
-export type Message = typeof messages.$inferSelect;
-
-export type InsertListing = z.infer<typeof insertListingSchema>;
-export type InsertUser = z.infer<typeof insertUserSchema>;

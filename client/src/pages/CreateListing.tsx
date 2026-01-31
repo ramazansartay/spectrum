@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useLocation } from 'wouter';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { insertListingSchema, Category } from '@shared/schema';
+import { insertListingSchema, Category } from '@shared/types';
 import { useCreateListing, useMe, useCategories } from '@/hooks/api';
 import { Navbar } from '@/components/Navbar';
 import { Button } from '@/components/ui/button';
