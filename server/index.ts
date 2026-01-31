@@ -24,8 +24,8 @@ async function createServer() {
   // Читаем шаблон HTML
   const template = fs.readFileSync(resolve('../dist/client/index.html'), 'utf-8');
 
-  // Мидлвара для статики
-  app.use('/assets', express.static(resolve('../dist/client/assets')));
+  // Мидлвара для статики - обслуживаем всю папку dist/client
+  app.use(express.static(resolve('../dist/client')));
 
   app.use('*', async (req, res) => {
     try {
