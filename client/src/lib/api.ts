@@ -8,38 +8,49 @@ async function request(path: string, options: RequestInit = {}) {
   const token = getAuthToken();
   const headers = new Headers(options.headers || {});
 
+  if (token) {
+    headers.set('Authorization', `Bearer ${token}`);
+  }
+
   let body = options.body;
 
-  if (!(body instanceof FormData)) {
-    headers.append('Content-Type', 'application/json');
-    body = JSON.stringify(body);
+  // Stringify body if it's a JSON object
+  if (body && !(body instanceof FormData) && typeof body !== 'string') {
+    try {
+        const jsonBody = JSON.stringify(body);
+        // Check if Content-Type is not already set to something else
+        if (!headers.has('Content-Type')) {
+            headers.set('Content-Type', 'application/json');
+        }
+        body = jsonBody;
+    } catch (error) {
+        console.error("Failed to stringify body", error);
+        // Decide how to handle this error. Maybe re-throw it.
+        throw new Error("Invalid body provided for request.");
+    }
   }
 
-  if (token) {
-    headers.append('Authorization', `Bearer ${token}`);
+  try {
+    const response = await fetch(`${BASE_URL}${path}`, {
+      ...options,
+      headers,
+      body,
+    });
+
+    if (!response.ok) {
+      // Attempt to parse a JSON error response from the server
+      const errorPayload = await response.json().catch(() => ({ message: response.statusText }));
+      throw new Error(errorPayload.message || 'API request failed');
+    }
+    
+    // Handle responses with no content
+    if (response.status === 204) {
+      return null;
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error('API request error:', error);
+    throw error; // Re-throw the error to be handled by the calling code
   }
-
-  const response = await fetch(`${BASE_URL}${path}`, {
-    ...options,
-    headers,
-    body,
-  });
-
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({ message: response.statusText }));
-    throw new Error(errorData.message || 'API request failed');
-  }
-
-  if (response.status === 204) { // No Content
-    return;
-  }
-
-  return response.json();
 }
-
-export const api = {
-  get: (path: string) => request(path, { method: 'GET' }),
-  post: (path: string, data: unknown) => request(path, { method: 'POST', body: data as BodyInit }),
-  put: (path: string, data: unknown) => request(path, { method: 'PUT', body: data as BodyInit }),
-  delete: (path: string) => request(path, { method: 'DELETE' }),
-};
