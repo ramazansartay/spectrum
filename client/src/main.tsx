@@ -1,12 +1,11 @@
-
 import { createRoot, hydrateRoot } from "react-dom/client";
 import App from "./App";
 import "./index.css";
-import i18n from "./i18n";
+import { i18nPromise } from "./i18n";
 
 const container = document.getElementById("root");
 
-i18n.init().then(() => {
+i18nPromise.then(() => {
   if (container) {
     if (container.hasChildNodes()) {
       hydrateRoot(container, <App />);
