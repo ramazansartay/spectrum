@@ -10,6 +10,7 @@ const __dirname = path.dirname(__filename);
 // Client configuration
 export default defineConfig({
   plugins: [react()],
+  publicDir: path.resolve(__dirname, 'public'),
   // root is now 'client', where this config is. No root option needed.
   build: {
     // Output directory is now relative to 'client'

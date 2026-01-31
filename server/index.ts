@@ -1,4 +1,4 @@
-
+import './dotenv.js';
 import express from 'express';
 import cors from 'cors';
 import path from 'path';
@@ -22,7 +22,7 @@ app.use('/api', router);
 
 if (isProduction) {
   const clientBuildPath = path.resolve(__dirname, '../client');
-  app.use('/locales', express.static(path.resolve(clientBuildPath, 'locales')));
+  app.use('/locales', express.static(path.resolve(__dirname, '../../public/locales')));
   app.use(express.static(clientBuildPath));
   app.get('*', (req, res) => {
     res.sendFile(path.resolve(clientBuildPath, 'index.html'));
