@@ -1,6 +1,19 @@
-import { createRoot } from "react-dom/client";
+
+import { createRoot, hydrateRoot } from "react-dom/client";
 import App from "./App";
 import "./index.css";
-import "./i18n";
+import i18n from "./i18n";
 
-createRoot(document.getElementById("root")!).render(<App />);
+const container = document.getElementById("root");
+
+i18n.init().then(() => {
+  if (container) {
+    if (container.hasChildNodes()) {
+      hydrateRoot(container, <App />);
+    } else {
+      createRoot(container).render(<App />);
+    }
+  } else {
+    console.error("Root container not found");
+  }
+});
