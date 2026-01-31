@@ -4,6 +4,7 @@ import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { createServer } from 'http';
+import morgan from 'morgan';
 import { router } from './routes.js';
 import { initializeSocket } from './socket.js';
 import { setupVite } from './vite.js';
@@ -17,13 +18,14 @@ const server = createServer(app);
 
 app.use(cors());
 app.use(express.json());
+app.use(morgan('dev'));
 app.use('/api', router);
 
 if (isProduction) {
-  // В production сборке, __dirname будет 'dist'. Клиентские файлы лежат в 'dist/public'.
-  const clientBuildPath = path.resolve(__dirname, 'public');
+  // В production, __dirname будет 'dist/server'. Клиентские файлы лежат в 'dist/client'.
+  const clientBuildPath = path.resolve(__dirname, '..', 'client');
   
-  // 1. Раздаем статику (CSS, JS, images) из 'dist/public'
+  // 1. Раздаем статику (CSS, JS, images) из 'dist/client'
   app.use(express.static(clientBuildPath));
 
   // 2. Для всех остальных запросов отдаем главный HTML-файл (SPA fallback)

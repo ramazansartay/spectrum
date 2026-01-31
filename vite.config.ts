@@ -14,7 +14,7 @@ export default defineConfig({
   root: 'client', 
   build: {
     // Output directory relative to the project root
-    outDir: '../dist/public',
+    outDir: '../dist/client',
     // Clear the public folder before each client build
     emptyOutDir: true, 
   },
