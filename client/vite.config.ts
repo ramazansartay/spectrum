@@ -10,25 +10,23 @@ const __dirname = path.dirname(__filename);
 // Client configuration
 export default defineConfig({
   plugins: [react()],
-  // Project root - 'client', all paths within it
-  root: 'client', 
+  // root is now 'client', where this config is. No root option needed.
   build: {
-    // Output directory relative to the project root
+    // Output directory is now relative to 'client'
     outDir: '../dist/client',
-    // Clear the public folder before each client build
     emptyOutDir: true,
     sourcemap: true,
   },
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "client", "src"),
-      "@shared": path.resolve(__dirname, "shared"),
-      "@assets": path.resolve(__dirname, "attached_assets"),
-      // FIX: Redirect the problematic import to the correct modern JSX runtime
+      // '@' now points to 'src' relative to this config's location
+      "@": path.resolve(__dirname, "src"), 
+      // '@shared' needs to go up one level
+      "@shared": path.resolve(__dirname, "..", "shared"),
+      "@assets": path.resolve(__dirname, "..", "attached_assets"),
+      // These fixes should still work
       "./cjs/react-jsx-runtime.production.min.js": "react/jsx-runtime",
-      // FIX: Redirect react-dom to fix build errors on Render
       "./cjs/react-dom.production.min.js": "react-dom",
-      // FIX: Redirect react to fix build errors on Render
       "./cjs/react.production.min.js": "react",
     },
   },
