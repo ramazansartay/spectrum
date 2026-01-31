@@ -22,18 +22,12 @@ app.use(morgan('dev'));
 app.use('/api', router);
 
 if (isProduction) {
-  // В production, __dirname будет 'dist/server'. Клиентские файлы лежат в 'dist/client'.
-  const clientBuildPath = path.resolve(__dirname, '..', 'client');
-  
-  // 1. Раздаем статику (CSS, JS, images) из 'dist/client'
+  const clientBuildPath = path.resolve(__dirname, '../client');
   app.use(express.static(clientBuildPath));
-
-  // 2. Для всех остальных запросов отдаем главный HTML-файл (SPA fallback)
   app.get('*', (req, res) => {
     res.sendFile(path.resolve(clientBuildPath, 'index.html'));
   });
 } else {
-  // В dev-режиме Vite сам обрабатывает статику и index.html
   setupVite(server, app);
 }
 
