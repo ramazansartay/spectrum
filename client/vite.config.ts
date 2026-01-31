@@ -15,7 +15,6 @@ export default defineConfig({
     // Output directory is now relative to 'client'
     outDir: '../dist/client',
     emptyOutDir: true,
-    sourcemap: true,
   },
   resolve: {
     alias: {
@@ -24,10 +23,6 @@ export default defineConfig({
       // '@shared' needs to go up one level
       "@shared": path.resolve(__dirname, "..", "shared"),
       "@assets": path.resolve(__dirname, "..", "attached_assets"),
-      // These fixes should still work
-      "./cjs/react-jsx-runtime.production.min.js": "react/jsx-runtime",
-      "./cjs/react-dom.production.min.js": "react-dom",
-      "./cjs/react.production.min.js": "react",
     },
   },
 });
