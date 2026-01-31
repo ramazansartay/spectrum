@@ -9,7 +9,7 @@ import { CategoryCard } from "@/components/CategoryCard";
 import { ListingCard } from "@/components/ListingCard";
 import { useListings, useCategories } from "@/hooks/api";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Category } from "@shared/schema";
+import { Category } from "@shared/types";
 import { useTranslation } from "react-i18next";
 
 const categoryStyleMap: { [key: string]: { icon: React.ElementType, color: string } } = {

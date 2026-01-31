@@ -1,11 +1,11 @@
+
 import type { Config } from "tailwindcss";
-import colors from "tailwindcss/colors";
 
 export default {
-  darkMode: ["class"],
   content: [
-    "./index.html",
-    "./src/**/*.{js,jsx,ts,tsx,css}",
+    "./client/index.html",
+    "./client/src/**/*.{js,jsx,ts,tsx,css}",
+    "./shared/**/*.{js,jsx,ts,tsx,css}",
   ],
   theme: {
     extend: {
@@ -15,7 +15,6 @@ export default {
         sm: ".1875rem", // 3px
       },
       colors: {
-        slate: colors.slate,
         // Flat / base colors (regular buttons)
         background: "hsl(var(--background) / <alpha-value>)",
         foreground: "hsl(var(--foreground) / <alpha-value>)",
@@ -108,5 +107,5 @@ export default {
       },
     },
   },
-  plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
+  plugins: [],
 } satisfies Config;
