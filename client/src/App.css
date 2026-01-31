@@ -1,3 +1,4 @@
+
 :root {
   --accent: #32B6FF;
   --accent-hover: #1995d4;
@@ -206,7 +207,7 @@ body {
     z-index: -1;
   }
 }
-}
+
 @media (max-width: 700px) {
   .burger { display: flex; }
   .nav {
