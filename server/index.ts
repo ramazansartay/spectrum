@@ -7,7 +7,6 @@ import { createServer } from 'http';
 import morgan from 'morgan';
 import { router } from './routes.js';
 import { initializeSocket } from './socket.js';
-import { setupVite } from './vite.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -28,9 +27,7 @@ if (isProduction) {
   app.get('*', (req, res) => {
     res.sendFile(path.resolve(clientBuildPath, 'index.html'));
   });
-} else {
-  setupVite(server, app);
-}
+} 
 
 initializeSocket(server);
 
