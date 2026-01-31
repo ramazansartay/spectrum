@@ -23,6 +23,7 @@ app.use('/api', router);
 
 if (isProduction) {
   const clientBuildPath = path.resolve(__dirname, '../client');
+  app.use('/locales', express.static(path.resolve(clientBuildPath, 'locales')));
   app.use(express.static(clientBuildPath));
   app.get('*', (req, res) => {
     res.sendFile(path.resolve(clientBuildPath, 'index.html'));

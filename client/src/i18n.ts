@@ -20,7 +20,7 @@ export const i18nPromise = i18n
       loadPath: "/locales/{{lng}}.json",
     },
     react: {
-      useSuspense: false,
+      useSuspense: true,
     },
   });
 
