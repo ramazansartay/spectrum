@@ -21,6 +21,13 @@ async function createServer() {
 
   const template = fs.readFileSync(resolve('../dist-client/index.html'), 'utf-8');
 
+  // Serve static assets from the 'assets' directory
+  app.use(
+    '/assets',
+    express.static(resolve('../dist-client/assets'))
+  );
+
+  // Serve other static files from the root of the dist-client directory
   app.use(express.static(resolve('../dist-client')));
 
   app.use('*', async (req, res) => {
