@@ -12,7 +12,7 @@
     "build": "npm run build:client && npm run build:server",
     "build:client": "cd client && vite build",
     "build:server": "vite build -c vite.config.server.ts",
-    "start": "cross-env NODE_ENV=production node ../dist/server/index.js",
+    "start": "cross-env NODE_ENV=production node ../dist/server/entry-server.js",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "lint:fix": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0 --fix"
   },
