@@ -5,6 +5,7 @@
   "type": "module",
   "main": "dist/server/index.js",
   "scripts": {
+    "postinstall": "cd client && npm install",
     "dev": "npm run dev:server",
     "dev:server": "vite -c vite.config.server.ts",
     "build": "vite build && vite build -c vite.config.server.ts",
