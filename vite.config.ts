@@ -26,7 +26,7 @@ export default defineConfig({
       // FIX: Redirect the problematic import to the correct modern JSX runtime
       "./cjs/react-jsx-runtime.production.min.js": "react/jsx-runtime",
       // FIX: Redirect react-dom to fix build errors on Render
-      "./cjs/react-dom.production.min.js": "react-dom/profiling",
+      "./cjs/react-dom.production.min.js": "react-dom",
       // FIX: Redirect react to fix build errors on Render
       "./cjs/react.production.min.js": "react",
     },
