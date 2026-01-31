@@ -1,37 +1,56 @@
-import './dotenv.js';
 import express from 'express';
-import cors from 'cors';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { createServer } from 'http';
-import morgan from 'morgan';
-import { router } from './routes.js';
-import { initializeSocket } from './socket.js';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const isProduction = process.env.NODE_ENV === 'production';
+// Эта функция будет заменена Vite во время сборки на путь к серверному бандлу
+// @ts-ignore
+import { render } from '../dist/server/entry-server.js';
 
-const app = express();
-const server = createServer(app);
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-app.use(cors());
-app.use(express.json());
-app.use(morgan('dev'));
-app.use('/api', router);
+const isTest = process.env.VITEST;
 
-if (isProduction) {
-  const clientBuildPath = path.resolve(__dirname, '../client');
-  app.use('/locales', express.static(path.resolve(__dirname, '../../public/locales')));
-  app.use(express.static(clientBuildPath));
-  app.get('*', (req, res) => {
-    res.sendFile(path.resolve(clientBuildPath, 'index.html'));
+async function createServer() {
+  const app = express();
+
+  const resolve = (p: string) => path.resolve(__dirname, p);
+
+  // Загружаем манифест для получения имен файлов ассетов
+  const manifest = JSON.parse(
+    fs.readFileSync(resolve('../dist/client/ssr-manifest.json'), 'utf-8'),
+  );
+
+  // Читаем шаблон HTML
+  const template = fs.readFileSync(resolve('../dist/client/index.html'), 'utf-8');
+
+  // Мидлвара для статики
+  app.use('/assets', express.static(resolve('../dist/client/assets')));
+
+  app.use('*', async (req, res) => {
+    try {
+      // Вызываем функцию рендеринга из нашего серверного бандла
+      const { appHtml, preloadLinks } = await render(req.originalUrl, manifest);
+
+      // Вставляем отрендеренное приложение и preload-ссылки в шаблон
+      const html = template
+        .replace(`<!--preload-links-->`, preloadLinks)
+        .replace(`<!--ssr-outlet-->`, appHtml);
+
+      res.status(200).set({ 'Content-Type': 'text/html' }).end(html);
+    } catch (e) {
+      console.error(e);
+      res.status(500).end('Internal Server Error');
+    }
   });
-} 
 
-initializeSocket(server);
+  return { app };
+}
 
-const PORT = process.env.PORT || 10000;
-server.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+if (!isTest) {
+  createServer().then(({ app }) =>
+    app.listen(3000, () => {
+      console.log('Server listening on http://localhost:3000');
+    }),
+  );
+}
