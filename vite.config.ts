@@ -16,7 +16,8 @@ export default defineConfig({
     // Output directory relative to the project root
     outDir: '../dist/client',
     // Clear the public folder before each client build
-    emptyOutDir: true, 
+    emptyOutDir: true,
+    sourcemap: true,
   },
   resolve: {
     alias: {
