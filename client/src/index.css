@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 0 0% 100%;
+  --foreground: 222 47% 11%;
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  
+  --primary: 201 100% 60%; /* #32B6FF */
+  --primary-foreground: 210 40% 98%;
+  
+  --secondary: 210 40% 96.1%;
+  --secondary-foreground: 222.2 47.4% 11.2%;
+  
+  --muted: 210 40% 96.1%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+  
+  --accent: 201 100% 60%;
+  --accent-foreground: 222.2 47.4% 11.2%;
+  
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 210 40% 98%;
+
+  --border: 214.3 31.8% 91.4%;
+  --input: 214.3 31.8% 91.4%;
+  --ring: 201 100% 60%;
+  
+  --radius: 0.75rem;
+  
+  --header-bg: 220 36% 12%; /* Darker Blue from image #101827 approx */
+  --primary: 201 100% 60%; /* Logo blue #32B6FF */
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-slate-50 text-foreground antialiased font-sans;
+  }
+  
+  /* Modern scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-slate-300 rounded-full hover:bg-slate-400 transition-colors;
+  }
+}
+
+@layer components {
+  .container-custom {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+  
+  .btn-primary {
+    @apply bg-primary text-white hover:bg-primary/90 shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all active:scale-95;
+  }
+
+  .card-hover {
+    @apply transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:shadow-black/5;
+  }
+}
