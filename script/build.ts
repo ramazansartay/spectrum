@@ -27,6 +27,7 @@ const allowlist = [
   "uuid",
   "ws",
   "xlsx",
+  "react-hook-form",
 ];
 
 async function buildAll() {
