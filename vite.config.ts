@@ -6,9 +6,6 @@ export default defineConfig({
   plugins: [
     react(),
   ],
-  optimizeDeps: {
-    include: ["react-hook-form", "@hookform/resolvers/zod"],
-  },
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "client", "src"),
@@ -20,6 +17,9 @@ export default defineConfig({
   build: {
     outDir: path.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true,
+    commonjsOptions: {
+      include: [/react-hook-form/, /@hookform\/resolvers/],
+    },
   },
   server: {
     fs: {
