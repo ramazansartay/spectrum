@@ -7,7 +7,7 @@ export default defineConfig({
     react(),
   ],
   optimizeDeps: {
-    include: ["react-hook-form"],
+    include: ["react-hook-form", "@hookform/resolvers/zod"],
   },
   resolve: {
     alias: {
