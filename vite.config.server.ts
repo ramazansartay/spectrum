@@ -12,7 +12,8 @@ export default defineConfig({
     },
   },
   build: {
-    ssr: 'server/index.ts',
+    // Теперь мы собираем ТОЛЬКО entry-server.tsx в SSR-бандл
+    ssr: 'client/src/entry-server.tsx',
     outDir: 'dist-server',
     emptyOutDir: true,
   },
