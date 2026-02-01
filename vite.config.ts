@@ -1,18 +1,19 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import path from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  root: 'client', // Указываем Vite, где корень нашего клиентского приложения
+  root: 'client',
   plugins: [react()],
   build: {
-    outDir: '../dist-client', // Явно указываем выходную директорию относительно корня (client)
-    sourcemap: true, // Включаем sourcemap для более легкой отладки
-    emptyOutDir: true, // Очищаем папку сборки перед каждой сборкой
+    outDir: '../dist-client',
+    sourcemap: true,
+    emptyOutDir: true,
   },
   resolve: {
     alias: {
-      '@': '/src',
+      '@': path.resolve(__dirname, 'client/src'),
     },
   },
 });
