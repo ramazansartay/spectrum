@@ -35,8 +35,8 @@ const allowlist = [
 async function buildAll() {
   await rm("dist", { recursive: true, force: true });
 
-  console.log("building client...");
-  await viteBuild();
+  // console.log("building client...");
+  // await viteBuild(); // Gemini: Закомментировано для проверки гипотезы о нехватке памяти на Render.
 
   console.log("building server...");
   const pkg = JSON.parse(await readFile("package.json", "utf-8"));
