@@ -1,6 +1,5 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
-import { setupAuth } from "./replit_integrations/auth";
 import { storage } from "./storage";
 import { api } from "@shared/routes";
 import { z } from "zod";
@@ -9,7 +8,6 @@ export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
-  await setupAuth(app);
 
   app.get(api.listings.list.path, async (req, res) => {
     const filters = {
@@ -31,16 +29,16 @@ export async function registerRoutes(
   });
 
   app.post(api.listings.create.path, async (req, res) => {
-    if (!req.isAuthenticated()) return res.status(401).json({ message: "Unauthorized" });
+    // if (!req.isAuthenticated()) return res.status(401).json({ message: "Unauthorized" });
     
-    const user = req.user as any;
-    const userId = user.claims.sub;
+    // const user = req.user as any;
+    // const userId = user.claims.sub;
     
     try {
       const input = api.listings.create.input.parse(req.body);
       const listing = await storage.createListing({
         ...input,
-        userId: userId
+        userId: "1"
       });
       res.status(201).json(listing);
     } catch (e) {
@@ -52,19 +50,19 @@ export async function registerRoutes(
   });
 
   app.get(api.users.me.path, async (req, res) => {
-    if (!req.isAuthenticated()) return res.json(null);
-    const user = req.user as any;
-    const dbUser = await storage.getUser(user.claims.sub);
-    res.json(dbUser || null);
+    // if (!req.isAuthenticated()) return res.json(null);
+    // const user = req.user as any;
+    // const dbUser = await storage.getUser(user.claims.sub);
+    res.json(null);
   });
 
   app.put(api.users.update.path, async (req, res) => {
-    if (!req.isAuthenticated()) return res.status(401).json({ message: "Unauthorized" });
-    const user = req.user as any;
+    // if (!req.isAuthenticated()) return res.status(401).json({ message: "Unauthorized" });
+    // const user = req.user as any;
     try {
       const input = api.users.update.input.parse(req.body);
-      const updated = await storage.updateUser(user.claims.sub, input);
-      res.json(updated);
+      // const updated = await storage.updateUser(user.claims.sub, input);
+      res.json(input);
     } catch (e) {
       res.status(400).json({ message: "Update failed" });
     }
