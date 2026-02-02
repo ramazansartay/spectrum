@@ -82,7 +82,10 @@ app.use((req, res, next) => {
   if (process.env.NODE_ENV === "production") {
     serveStatic(app);
   } else {
-    const { setupVite } = await import("./vite.js");
+    // We use a dynamic import here to prevent TSC from trying to
+    // typecheck the vite dev server code in production.
+    const viteModule = "./vite.js";
+    const { setupVite } = await import(viteModule);
     await setupVite(httpServer, app);
   }
 

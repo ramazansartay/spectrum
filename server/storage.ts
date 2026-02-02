@@ -3,7 +3,7 @@ import {
   users, listings, 
   type User, type InsertUser, 
   type Listing, type InsertListing 
-} from "@shared/schema";
+} from "../shared/schema.js";
 import { eq, desc, ilike, or, and, gte, lte } from "drizzle-orm";
 
 export interface IStorage {
