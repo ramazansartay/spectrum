@@ -1,12 +1,23 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import type { User, LoginCredentials } from "@shared/models/auth";
+import type { User } from "@shared/models/auth";
+import { z } from "zod";
+
+const loginSchema = z.object({
+  email: z.string().email(),
+  password: z.string(),
+});
+
+const signupSchema = loginSchema.extend({
+  name: z.string(),
+});
+
+export type LoginCredentials = z.infer<typeof loginSchema>;
+export type SignupCredentials = z.infer<typeof signupSchema>;
 
 async function fetchUser(): Promise<User | null> {
-  const response = await fetch("/api/auth/user", {
-    credentials: "include",
-  });
+  const response = await fetch("/api/users/me");
 
-  if (response.status === 401) {
+  if (response.status === 404) {
     return null;
   }
 
@@ -24,7 +35,6 @@ async function login(credentials: LoginCredentials): Promise<User> {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(credentials),
-    credentials: "include",
   });
 
   if (!response.ok) {
@@ -35,8 +45,31 @@ async function login(credentials: LoginCredentials): Promise<User> {
   return response.json();
 }
 
+async function signup(credentials: SignupCredentials): Promise<User> {
+  const response = await fetch("/api/signup", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(credentials),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({ message: 'Signup failed' }));
+    throw new Error(errorData.message || `${response.status}: ${response.statusText}`);
+  }
+
+  return response.json();
+}
+
 async function logout(): Promise<void> {
-  window.location.href = "/api/logout";
+  const response = await fetch("/api/logout", {
+    method: "GET",
+  });
+
+  if (!response.ok) {
+    throw new Error("Logout failed");
+  }
 }
 
 export function useLogin() {
@@ -44,7 +77,17 @@ export function useLogin() {
   return useMutation<User, Error, LoginCredentials>({
     mutationFn: login,
     onSuccess: (data) => {
-      queryClient.setQueryData(['/api/auth/user'], data);
+      queryClient.setQueryData(["user"], data);
+    },
+  });
+}
+
+export function useSignup() {
+  const queryClient = useQueryClient();
+  return useMutation<User, Error, SignupCredentials>({
+    mutationFn: signup,
+    onSuccess: (data) => {
+      queryClient.setQueryData(["user"], data);
     },
   });
 }
@@ -52,7 +95,7 @@ export function useLogin() {
 export function useAuth() {
   const queryClient = useQueryClient();
   const { data: user, isLoading } = useQuery<User | null>({
-    queryKey: ["/api/auth/user"],
+    queryKey: ["user"],
     queryFn: fetchUser,
     retry: false,
     staleTime: 1000 * 60 * 5, // 5 minutes
@@ -61,7 +104,7 @@ export function useAuth() {
   const logoutMutation = useMutation({
     mutationFn: logout,
     onSuccess: () => {
-      queryClient.setQueryData(["/api/auth/user"], null);
+      queryClient.setQueryData(["user"], null);
     },
   });
 

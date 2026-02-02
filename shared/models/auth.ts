@@ -15,18 +15,10 @@ export const sessions = pgTable(
 // User storage table.
 export const users = pgTable("users", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  email: varchar("email").unique(),
-  firstName: varchar("first_name"),
-  lastName: varchar("last_name"),
-  profileImageUrl: varchar("profile_image_url"),
-  
-  // App specific fields
-  username: text("username"), // keeping username if needed, or map to email/name
-  displayName: text("display_name"),
-  location: text("location"),
-  contact: text("contact"),
-  team: text("team"),
-  
+  email: varchar("email").unique().notNull(),
+  name: text("name").notNull(),
+  hashedPassword: text("hashed_password"),
+  avatarUrl: text("avatar_url"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });

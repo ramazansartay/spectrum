@@ -2,13 +2,16 @@
 import 'dotenv/config';
 import express, { type Request, Response, NextFunction } from "express";
 import session from "express-session";
+import connectPgSimple from "connect-pg-simple";
 import { registerRoutes } from "./routes.js";
 import { serveStatic } from "./static.js";
 import { authRouter } from "./auth.js"; // Import the new auth router
 import { createServer } from "http";
+import { pool } from "./db.js";
 
 const app = express();
 const httpServer = createServer(app);
+const PgStore = connectPgSimple(session);
 
 declare module "http" {
   interface IncomingMessage {
@@ -17,14 +20,19 @@ declare module "http" {
 }
 
 // Session middleware
-// NOTE: In a production app, you'd want to use a proper session store
-// and a securely generated secret.
 app.use(
   session({
+    store: new PgStore({
+      pool: pool,
+      tableName: "sessions",
+    }),
     secret: process.env.SESSION_SECRET || "this-is-a-development-secret",
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: process.env.NODE_ENV === "production" },
+    cookie: { 
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+    },
   }),
 );
 

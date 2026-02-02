@@ -1,19 +1,25 @@
-
 import { Link, useLocation } from "wouter";
-import { Menu, X, Plus, User, Search, MessageSquare, Globe } from "lucide-react";
+import { Menu, X, Plus, User, Search, MessageSquare } from "lucide-react";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useUser } from "@/hooks/use-user";
+import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const [location] = useLocation();
-  const { data: user } = useUser();
+  const { isAuthenticated, user, logout } = useAuth();
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
-  const isActive = (path: string) => location === path;
+  const getInitials = () => {
+    if (user?.name) {
+      return user.name[0].toUpperCase();
+    }
+    if (user?.email) {
+      return user.email[0].toUpperCase();
+    }
+    return "U"; // Default to 'U' for User
+  };
 
   return (
     <nav className="bg-[#101827] text-white sticky top-0 z-50 shadow-md">
@@ -40,18 +46,31 @@ export function Navbar() {
             
             <div className="h-6 w-px bg-gray-700 mx-2"></div>
 
-            {user ? (
-              <Link href="/profile" className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors">
-                <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center border border-primary/50 text-primary text-sm font-bold">
-                  {user.name?.[0] || user.email[0].toUpperCase()}
-                </div>
-              </Link>
+            {isAuthenticated ? (
+              <>
+                <Link href="/profile">
+                  <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center border border-primary/50 text-primary text-sm font-bold">
+                    {getInitials()}
+                  </div>
+                </Link>
+                <Button size="sm" variant="outline" onClick={() => logout()} className="text-gray-300 hover:text-white border-gray-700 hover:bg-gray-800">
+                  Logout
+                </Button>
+              </>
             ) : (
-              <Link href="/login" className="text-sm font-medium text-gray-300 hover:text-white">
-                Log In
-              </Link>
+              <>
+                <Link href="/login">
+                  <Button size="sm" variant="outline" className="text-gray-300 hover:text-white border-gray-700 hover:bg-gray-800">
+                    Log In
+                  </Button>
+                </Link>
+                <Link href="/signup">
+                  <Button size="sm" className="bg-primary hover:bg-primary/90 text-white font-semibold shadow-lg shadow-primary/20">
+                    Sign Up
+                  </Button>
+                </Link>
+              </>
             )}
-
             <Link href="/add">
               <Button size="sm" className="bg-primary hover:bg-primary/90 text-white font-semibold shadow-lg shadow-primary/20">
                 <Plus className="w-4 h-4 mr-1.5" />
@@ -94,16 +113,32 @@ export function Navbar() {
                   <span>Messages</span>
                 </div>
               </Link>
-              <Link href="/profile" onClick={() => setIsOpen(false)}>
-                <div className="flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 text-gray-300">
-                  <User className="w-5 h-5" />
-                  <span>Profile</span>
-                </div>
-              </Link>
+              {isAuthenticated &&
+                <Link href="/profile" onClick={() => setIsOpen(false)}>
+                  <div className="flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 text-gray-300">
+                    <User className="w-5 h-5" />
+                    <span>Profile</span>
+                  </div>
+                </Link>
+              }
               <div className="pt-2">
                 <Link href="/add" onClick={() => setIsOpen(false)}>
                   <Button className="w-full bg-primary text-white">Post an Ad</Button>
                 </Link>
+              </div>
+              <div className="pt-2">
+                {isAuthenticated ? (
+                  <Button className="w-full" variant="outline" onClick={() => { logout(); setIsOpen(false); }}>Logout</Button>
+                ) : (
+                  <div className="flex gap-2">
+                    <Link href="/login" className="w-full" onClick={() => setIsOpen(false)}>
+                      <Button className="w-full" variant="outline">Log In</Button>
+                    </Link>
+                    <Link href="/signup" className="w-full" onClick={() => setIsOpen(false)}>
+                      <Button className="w-full">Sign Up</Button>
+                    </Link>
+                  </div>
+                )}
               </div>
             </div>
           </motion.div>

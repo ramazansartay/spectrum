@@ -4,10 +4,12 @@ import {
   type User, type InsertUser, 
   type Listing, type InsertListing 
 } from "../shared/schema.js";
-import { eq, desc, ilike, or, and, gte, lte } from "drizzle-orm";
+import { eq, desc, ilike, or, and, gte, lte, sql } from "drizzle-orm";
 
 export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
+  getUserByEmail(email: string): Promise<User | undefined>;
+  createUser(user: InsertUser): Promise<User>;
   updateUser(id: string, user: Partial<InsertUser>): Promise<User>;
   getListings(filters?: {
     search?: string;
@@ -25,6 +27,16 @@ export class DatabaseStorage implements IStorage {
   async getUser(id: string): Promise<User | undefined> {
     const [user] = await db.select().from(users).where(eq(users.id, id));
     return user;
+  }
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.email, email));
+    return user;
+  }
+
+  async createUser(user: InsertUser): Promise<User> {
+    const [newUser] = await db.insert(users).values(user).returning();
+    return newUser;
   }
 
   async updateUser(id: string, update: Partial<InsertUser>): Promise<User> {
@@ -60,16 +72,21 @@ export class DatabaseStorage implements IStorage {
     if (filters?.city) {
       conditions.push(ilike(listings.location, `%${filters.city}%`));
     }
-    
-    // Price filters (simplified, prices are stored as text but we try to match)
-    // In production, prices should be stored as integers/decimals
+
+    if (filters?.minPrice) {
+      conditions.push(gte(sql`CAST(${listings.price} AS numeric)`, filters.minPrice));
+    }
+
+    if (filters?.maxPrice) {
+      conditions.push(lte(sql`CAST(${listings.price} AS numeric)`, filters.maxPrice));
+    }
     
     let query = db.select().from(listings).where(and(...conditions));
     
     if (filters?.sort === 'price-asc') {
-      return await query.orderBy(listings.price); // Simplified sort
+      return await query.orderBy(sql`CAST(${listings.price} AS numeric) ASC`);
     } else if (filters?.sort === 'price-desc') {
-      return await query.orderBy(desc(listings.price));
+      return await query.orderBy(sql`CAST(${listings.price} AS numeric) DESC`);
     }
     
     return await query.orderBy(desc(listings.createdAt));
