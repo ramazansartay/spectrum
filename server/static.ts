@@ -10,10 +10,12 @@ export function serveStatic(app: Express) {
     );
   }
 
+  // Serve static assets from the 'public' folder
   app.use(express.static(distPath));
 
-  // fall through to index.html if the file doesn't exist
-  app.use("/{*path}", (_req, res) => {
+  // For any GET request that doesn't start with /api, serve index.html.
+  // This is for SPA routing.
+  app.get(/^(?!\/api).*/, (_req, res) => {
     res.sendFile(path.resolve(distPath, "index.html"));
   });
 }
