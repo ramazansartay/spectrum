@@ -145,7 +145,7 @@ export default function SearchPage() {
         <div className="flex items-center gap-4 mb-8">
           <div className="flex-1 relative">
             <Input 
-              placeholder="Search listings..." 
+              placeholder="Search" 
               value={filters.search}
               onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
               className="pl-10 h-12 text-lg bg-white shadow-sm border-gray-200"
