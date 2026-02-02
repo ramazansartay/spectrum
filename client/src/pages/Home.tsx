@@ -115,7 +115,7 @@ export default function Home() {
             <Package className="w-12 h-12 text-gray-300 mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-gray-900">No listings yet</h3>
             <p className="text-gray-500 mb-6">Be the first to post something for sale!</p>
-            <Link href="/create">
+            <Link href="/add">
               <Button>Post an Ad</Button>
             </Link>
           </div>
