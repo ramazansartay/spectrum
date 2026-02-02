@@ -20,19 +20,26 @@ export async function registerRoutes(
 ): Promise<Server> {
 
   app.get(api.listings.list.path, async (req, res) => {
-    // Ensure `sort` is a single string, not an array
-    const sortQuery = Array.isArray(req.query.sort) ? req.query.sort[0] : req.query.sort;
+    try {
+      // Validate the query parameters
+      const filters = api.listings.list.input.parse(req.query);
+      
+      const listings = await storage.getListings({
+        ...filters,
+        // Ensure `sort` is a single string and has a default value
+        sort: filters.sort || 'recent', 
+      });
 
-    const filters = {
-      search: req.query.search as string,
-      category: req.query.category as string,
-      city: req.query.city as string,
-      sort: sortQuery as string,
-      minPrice: req.query.minPrice ? Number(req.query.minPrice) : undefined,
-      maxPrice: req.query.maxPrice ? Number(req.query.maxPrice) : undefined,
-    };
-    const listings = await storage.getListings(filters);
-    res.json(listings);
+      res.json(listings);
+    } catch (e) {
+      if (e instanceof z.ZodError) {
+        // If validation fails, return a 400 Bad Request
+        return res.status(400).json({ message: e.errors[0].message });
+      }
+      // For any other unexpected errors, return a 500 Internal Server Error
+      console.error(e);
+      res.status(500).json({ message: "Internal Server Error" });
+    }
   });
 
   app.get(api.listings.get.path, async (req, res) => {

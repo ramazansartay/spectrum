@@ -15,20 +15,24 @@ export function useListings(filters?: {
   minPrice?: number;
   maxPrice?: number;
 }) {
-  // Construct query string manually for GET request since input schema is optional
+  const effectiveFilters = {
+    sort: 'recent', // Default sort order
+    ...filters,
+  };
+
   const queryParams = new URLSearchParams();
-  if (filters?.search) queryParams.set("search", filters.search);
-  if (filters?.category) queryParams.set("category", filters.category);
-  if (filters?.city) queryParams.set("city", filters.city);
-  if (filters?.sort) queryParams.set("sort", filters.sort);
-  if (filters?.minPrice) queryParams.set("minPrice", filters.minPrice.toString());
-  if (filters?.maxPrice) queryParams.set("maxPrice", filters.maxPrice.toString());
+  if (effectiveFilters.search) queryParams.set("search", effectiveFilters.search);
+  if (effectiveFilters.category) queryParams.set("category", effectiveFilters.category);
+  if (effectiveFilters.city) queryParams.set("city", effectiveFilters.city);
+  if (effectiveFilters.sort) queryParams.set("sort", effectiveFilters.sort);
+  if (effectiveFilters.minPrice) queryParams.set("minPrice", effectiveFilters.minPrice.toString());
+  if (effectiveFilters.maxPrice) queryParams.set("maxPrice", effectiveFilters.maxPrice.toString());
 
   const queryString = queryParams.toString();
   const url = `${api.listings.list.path}${queryString ? `?${queryString}` : ""}`;
 
   return useQuery({
-    queryKey: [api.listings.list.path, filters],
+    queryKey: [api.listings.list.path, effectiveFilters],
     queryFn: async () => {
       const res = await fetch(url);
       if (!res.ok) throw new Error("Failed to fetch listings");
