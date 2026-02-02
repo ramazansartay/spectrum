@@ -42,9 +42,9 @@ export default function CreateListing() {
   // Redirect if not logged in
   useEffect(() => {
     if (!isUserLoading && !user) {
-      window.location.href = "/api/login";
+      setLocation("/login");
     }
-  }, [user, isUserLoading]);
+  }, [user, isUserLoading, setLocation]);
 
   // Pre-fill contact info if user exists
   useEffect(() => {
