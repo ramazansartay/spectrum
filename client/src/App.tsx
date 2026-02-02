@@ -10,13 +10,15 @@ import CreateListing from "@/pages/CreateListing";
 import Profile from "@/pages/Profile";
 import Chat from "@/pages/Chat";
 import ListingDetails from "@/pages/ListingDetails";
+import { LoginPage } from "@/pages/Login";
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/search" component={SearchPage} />
-      <Route path="/create" component={CreateListing} />
+      <Route path="/add" component={CreateListing} />
+      <Route path="/login" component={LoginPage} />
       <Route path="/profile" component={Profile} />
       <Route path="/chat" component={Chat} />
       <Route path="/listing/:id" component={ListingDetails} />

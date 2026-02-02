@@ -1,3 +1,4 @@
+
 import { Link, useLocation } from "wouter";
 import { Menu, X, Plus, User, Search, MessageSquare, Globe } from "lucide-react";
 import { useState } from "react";
@@ -42,16 +43,16 @@ export function Navbar() {
             {user ? (
               <Link href="/profile" className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors">
                 <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center border border-primary/50 text-primary text-sm font-bold">
-                  {user.displayName?.[0] || user.username[0].toUpperCase()}
+                  {user.name?.[0] || user.email[0].toUpperCase()}
                 </div>
               </Link>
             ) : (
-              <a href="/api/login" className="text-sm font-medium text-gray-300 hover:text-white">
+              <Link href="/login" className="text-sm font-medium text-gray-300 hover:text-white">
                 Log In
-              </a>
+              </Link>
             )}
 
-            <Link href="/create">
+            <Link href="/add">
               <Button size="sm" className="bg-primary hover:bg-primary/90 text-white font-semibold shadow-lg shadow-primary/20">
                 <Plus className="w-4 h-4 mr-1.5" />
                 Post Ad
@@ -100,7 +101,7 @@ export function Navbar() {
                 </div>
               </Link>
               <div className="pt-2">
-                <Link href="/create" onClick={() => setIsOpen(false)}>
+                <Link href="/add" onClick={() => setIsOpen(false)}>
                   <Button className="w-full bg-primary text-white">Post an Ad</Button>
                 </Link>
               </div>
