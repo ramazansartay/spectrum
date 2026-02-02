@@ -1,19 +1,11 @@
 {
   "compilerOptions": {
-    "composite": true,
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "target": "ESNext",
-    "outDir": "dist/server",
+    "module": "commonjs",
+    "target": "esnext",
+    "outDir": "dist",
     "strict": true,
     "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "baseUrl": ".",
-    "paths": {
-      "@shared/*": ["./shared/*"]
-    }
+    "skipLibCheck": true
   },
-  "include": ["server", "shared"],
-  "exclude": ["server/vite.ts"]
+  "include": ["server/**/*.ts", "shared/**/*.ts"]
 }
