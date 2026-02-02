@@ -11,14 +11,25 @@ const MOCK_USER = {
   name: "Test User",
   email: "test@example.com",
   avatarUrl: "https://avatar.vercel.sh/test-user",
+  password: "password123" // In a real app, this would be a hashed password
 };
 
-// When the client navigates to /api/login, we "log them in"
-// by setting a user object on the session and redirecting.
-authRouter.get("/login", (req, res) => {
-  // In a real Passport.js flow, this would be done by passport.authenticate()
-  (req as any).session.user = MOCK_USER;
-  res.redirect("/");
+// /api/login handles user authentication via POST
+authRouter.post("/login", (req, res) => {
+  const { email, password } = req.body;
+
+  // In a real app, you would look up the user in a database
+  if (email === MOCK_USER.email && password === MOCK_USER.password) {
+    (req as any).session.user = {
+      id: MOCK_USER.id,
+      name: MOCK_USER.name,
+      email: MOCK_USER.email,
+      avatarUrl: MOCK_USER.avatarUrl
+    };
+    res.json((req as any).session.user);
+  } else {
+    res.status(401).json({ message: "Invalid credentials" });
+  }
 });
 
 // /api/logout clears the session.
@@ -32,10 +43,10 @@ authRouter.get("/logout", (req, res, next) => {
 });
 
 // /api/users/me returns the current user from the session.
-authRouter.get("/users/me", (req, res) => {
+authRouter.get("/auth/user", (req, res) => {
   const user = (req as any).session.user;
   if (!user) {
-    return res.json(null); // No user is logged in
+    return res.status(401).json(null); // No user is logged in, send 401
   }
   res.json(user);
 });
