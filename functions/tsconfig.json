@@ -1,19 +1,20 @@
 {
   "compilerOptions": {
-    "module": "NodeNext",
-    "esModuleInterop": true,
-    "moduleResolution": "nodenext",
+    "module": "commonjs",
     "noImplicitReturns": true,
     "noUnusedLocals": true,
     "outDir": "lib",
     "sourceMap": true,
     "strict": true,
     "target": "es2017",
-    "baseUrl": "./src",
     "skipLibCheck": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "baseUrl": ".",
     "paths": {
-      "@shared/*": ["../../shared/*"],
-      "drizzle-orm": ["../../node_modules/drizzle-orm"]
+      "@shared/*": [
+        "../shared/*"
+      ]
     }
   },
   "compileOnSave": true,
