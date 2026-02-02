@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { useLocation } from "wouter";
+import { useLocation, Link } from "wouter";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useSignup } from "@/hooks/use-auth";
@@ -117,6 +117,12 @@ export function SignupPage() {
                 </Button>
               </form>
             </Form>
+            <p className="text-center text-sm text-gray-600 mt-6">
+              Already have an account?{" "}
+              <Link href="/login" className="font-semibold text-primary hover:underline">
+                Sign in
+              </Link>
+            </p>
           </CardContent>
         </Card>
       </div>
