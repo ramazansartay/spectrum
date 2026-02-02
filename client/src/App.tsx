@@ -6,7 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
 import SearchPage from "@/pages/Search";
-import CreateListing from "@/pages/CreateListing";
+import PostAdd from "@/pages/PostAdd";
 import Profile from "@/pages/Profile";
 import Chat from "@/pages/Chat";
 import ListingDetails from "@/pages/ListingDetails";
@@ -17,7 +17,7 @@ function Router() {
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/search" component={SearchPage} />
-      <Route path="/create" component={CreateListing} /> 
+      <Route path="/add" component={PostAdd} /> 
       <Route path="/login" component={LoginPage} />
       <Route path="/profile" component={Profile} />
       <Route path="/chat" component={Chat} />
