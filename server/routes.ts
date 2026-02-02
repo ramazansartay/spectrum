@@ -21,12 +21,12 @@ export async function registerRoutes(
 
   app.get(api.listings.list.path, async (req, res) => {
     try {
-      // Validate the query parameters
-      const filters = api.listings.list.input.parse(req.query);
+      // Validate the query parameters, providing a default empty object
+      const filters = api.listings.list.input.parse(req.query) || {};
       
       const listings = await storage.getListings({
         ...filters,
-        // Ensure `sort` is a single string and has a default value
+        // Ensure `sort` has a default value
         sort: filters.sort || 'recent', 
       });
 
