@@ -9,13 +9,32 @@ import { useToast } from "@/hooks/use-toast";
 
 export default function ListingDetails() {
   const { id } = useParams();
-  const { data: listing, isLoading, error } = useListing(Number(id));
+  const listingId = Number(id);
+  const { data: listing, isLoading, error } = useListing(listingId);
   const { toast } = useToast();
 
   const handleShare = () => {
     navigator.clipboard.writeText(window.location.href);
     toast({ title: "Link copied", description: "Listing URL copied to clipboard" });
   };
+
+  const goBack = () => {
+    history.back();
+  };
+
+  if (isNaN(listingId)) {
+    return (
+        <div className="min-h-screen bg-[#f6f9fb] flex flex-col">
+            <Navbar />
+            <div className="flex-1 flex items-center justify-center flex-col gap-4">
+                <h1 className="text-2xl font-bold">Invalid Listing ID</h1>
+                <Link href="/">
+                    <Button variant="outline">Back to Home</Button>
+                </Link>
+            </div>
+        </div>
+    );
+  }
 
   if (isLoading) return (
     <div className="min-h-screen bg-[#f6f9fb]">
@@ -56,10 +75,10 @@ export default function ListingDetails() {
       <Navbar />
       
       <div className="container-custom mx-auto py-8">
-        <Link href="/search" className="inline-flex items-center text-sm text-gray-500 hover:text-primary mb-6 transition-colors">
+        <button onClick={goBack} className="inline-flex items-center text-sm text-gray-500 hover:text-primary mb-6 transition-colors">
           <ArrowLeft className="w-4 h-4 mr-1" />
           Back to Listings
-        </Link>
+        </button>
 
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Main Content */}
