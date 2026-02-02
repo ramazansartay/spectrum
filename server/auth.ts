@@ -43,10 +43,10 @@ authRouter.get("/logout", (req, res, next) => {
 });
 
 // /api/users/me returns the current user from the session.
-authRouter.get("/auth/user", (req, res) => {
+authRouter.get("/users/me", (req, res) => {
   const user = (req as any).session.user;
   if (!user) {
-    return res.status(401).json(null); // No user is logged in, send 401
+    return res.status(404).json({ message: "User not found" }); // No user is logged in, send 404
   }
   res.json(user);
 });
