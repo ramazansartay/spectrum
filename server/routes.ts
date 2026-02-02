@@ -20,11 +20,14 @@ export async function registerRoutes(
 ): Promise<Server> {
 
   app.get(api.listings.list.path, async (req, res) => {
+    // Ensure `sort` is a single string, not an array
+    const sortQuery = Array.isArray(req.query.sort) ? req.query.sort[0] : req.query.sort;
+
     const filters = {
       search: req.query.search as string,
       category: req.query.category as string,
       city: req.query.city as string,
-      sort: req.query.sort as string,
+      sort: sortQuery as string,
       minPrice: req.query.minPrice ? Number(req.query.minPrice) : undefined,
       maxPrice: req.query.maxPrice ? Number(req.query.maxPrice) : undefined,
     };

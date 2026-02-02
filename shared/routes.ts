@@ -39,14 +39,14 @@ export const api = {
   users: {
     me: {
       method: 'GET' as const,
-      path: '/api/user',
+      path: '/api/users/me',
       responses: {
         200: z.custom<typeof users.$inferSelect>().nullable(),
       },
     },
     update: {
       method: 'PUT' as const,
-      path: '/api/user',
+      path: '/api/users',
       input: insertUserSchema.partial(),
       responses: {
         200: z.custom<typeof users.$inferSelect>(),
