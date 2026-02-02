@@ -1,4 +1,4 @@
-import { db } from "./db";
+import { db } from "./db.js";
 import { 
   users, listings, 
   type User, type InsertUser, 
