@@ -1,7 +1,10 @@
+
 import 'dotenv/config';
 import express, { type Request, Response, NextFunction } from "express";
+import session from "express-session";
 import { registerRoutes } from "./routes.js";
 import { serveStatic } from "./static.js";
+import { authRouter } from "./auth.js"; // Import the new auth router
 import { createServer } from "http";
 
 const app = express();
@@ -13,6 +16,18 @@ declare module "http" {
   }
 }
 
+// Session middleware
+// NOTE: In a production app, you'd want to use a proper session store
+// and a securely generated secret.
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "this-is-a-development-secret",
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: process.env.NODE_ENV === "production" },
+  }),
+);
+
 app.use(
   express.json({
     verify: (req, _res, buf) => {
@@ -22,6 +37,9 @@ app.use(
 );
 
 app.use(express.urlencoded({ extended: false }));
+
+// Use the auth router for all /api paths
+app.use("/api", authRouter);
 
 export function log(message: string, source = "express") {
   const formattedTime = new Date().toLocaleTimeString("en-US", {
@@ -76,29 +94,20 @@ app.use((req, res, next) => {
     return res.status(status).json({ message });
   });
 
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
   if (process.env.NODE_ENV === "production") {
     serveStatic(app);
   } else {
-    // We use a dynamic import here to prevent TSC from trying to
-    // typecheck the vite dev server code in production.
     const viteModule = "./vite.js";
     const { setupVite } = await import(viteModule);
     await setupVite(httpServer, app);
   }
 
-  // ALWAYS serve the app on the port specified in the environment variable PORT
-  // Other ports are firewalled. Default to 5000 if not specified.
-  // this serves both the API and the client.
-  // It is the only port that is not firewalled.
   const port = parseInt(process.env.PORT || "5000", 10);
   const host = "0.0.0.0";
 
   console.log(`Attempting to listen on ${host}:${port}`);
 
   httpServer.listen(port, host, () => {
-      log(`serving on port ${port}`);
+    log(`serving on port ${port}`);
   });
 })();

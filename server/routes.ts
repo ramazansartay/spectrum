@@ -1,8 +1,18 @@
+
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage.js";
 import { api } from "../shared/routes.js";
 import { z } from "zod";
+
+// A middleware to check if the user is authenticated
+function isAuthenticated(req: any, res: any, next: any) {
+  if ((req.session as any).user) {
+    next();
+  } else {
+    res.status(401).json({ message: "Unauthorized" });
+  }
+}
 
 export async function registerRoutes(
   httpServer: Server,
@@ -28,17 +38,15 @@ export async function registerRoutes(
     res.json(listing);
   });
 
-  app.post(api.listings.create.path, async (req, res) => {
-    // if (!req.isAuthenticated()) return res.status(401).json({ message: "Unauthorized" });
-    
-    // const user = req.user as any;
-    // const userId = user.claims.sub;
+  // This route is now protected.
+  app.post(api.listings.create.path, isAuthenticated, async (req, res) => {
+    const user = (req.session as any).user;
     
     try {
       const input = api.listings.create.input.parse(req.body);
       const listing = await storage.createListing({
         ...input,
-        userId: "1"
+        userId: user.id // Use the authenticated user's ID
       });
       res.status(201).json(listing);
     } catch (e) {
@@ -49,20 +57,15 @@ export async function registerRoutes(
     }
   });
 
-  app.get(api.users.me.path, async (req, res) => {
-    // if (!req.isAuthenticated()) return res.json(null);
-    // const user = req.user as any;
-    // const dbUser = await storage.getUser(user.claims.sub);
-    res.json(null);
-  });
+  // The /api/users/me route is now handled in auth.ts
 
-  app.put(api.users.update.path, async (req, res) => {
-    // if (!req.isAuthenticated()) return res.status(401).json({ message: "Unauthorized" });
-    // const user = req.user as any;
+  app.put(api.users.update.path, isAuthenticated, async (req, res) => {
+    const user = (req.session as any).user;
     try {
       const input = api.users.update.input.parse(req.body);
-      // const updated = await storage.updateUser(user.claims.sub, input);
-      res.json(input);
+      // In a real app, you would update the user in the database.
+      // For now, we just return the input.
+      res.json({ ...user, ...input });
     } catch (e) {
       res.status(400).json({ message: "Update failed" });
     }
