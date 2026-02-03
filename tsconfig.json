@@ -14,12 +14,16 @@
     "paths": {
       "@shared/*": [
         "./shared/*"
+      ],
+      "@/*": [
+        "client/src/*"
       ]
     }
   },
   "compileOnSave": true,
   "include": [
     "functions/src",
-    "shared"
+    "shared",
+    "client"
   ]
 }
