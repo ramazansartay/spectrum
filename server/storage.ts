@@ -4,7 +4,7 @@ import * as schema from './schema.js';
 import { Listing } from './schema.js';
 import config from './config.js';
 
-const client = postgres(config.databaseUrl, { ssl: 'require' });
+const client = postgres(config.database.url, { ssl: 'require' });
 const db = drizzle(client, { schema });
 
 export class DatabaseStorage {
