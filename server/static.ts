@@ -1,14 +1,14 @@
-import { Express } from 'express';
+import express, { Express } from 'express';
 import { resolve } from 'path';
 
 export function setupStatic(app: Express) {
   if (process.env.NODE_ENV !== 'production') return;
 
-  const clientPath = resolve('client');
+  const clientPath = resolve('dist/client');
 
   app.use(express.static(clientPath));
 
-  app.get('*_*, (req, res) => {
+  app.get(/(.*)/, (req, res) => {
     res.sendFile(resolve(clientPath, 'index.html'));
   });
 }

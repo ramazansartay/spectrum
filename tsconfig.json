@@ -1,14 +1,14 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "target": "ESNext",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "noImplicitReturns": true,
     "noUnusedLocals": true,
     "outDir": "functions/lib",
     "sourceMap": true,
     "strict": true,
-    "target": "es2017",
     "skipLibCheck": true,
-    "moduleResolution": "node",
     "esModuleInterop": true,
     "baseUrl": ".",
     "paths": {

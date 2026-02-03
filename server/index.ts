@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import express from 'express';
 import { createServer } from 'http';
+import { setupStatic } from './static.js';
 
 const app = express();
 const httpServer = createServer(app);
@@ -9,7 +10,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 if (process.env.NODE_ENV === 'production') {
-  // In a real app, you would serve static files here.
+  setupStatic(app);
 } else {
   console.log('Development mode');
 }
