@@ -12,8 +12,7 @@ export function useListings(filters?: {
   category?: string;
   city?: string;
   sort?: string;
-  minPrice?: number;
-  maxPrice?: number;
+  priceRange?: string;
 }) {
   const effectiveFilters = {
     sort: 'recent', // Default sort order
@@ -25,8 +24,7 @@ export function useListings(filters?: {
   if (effectiveFilters.category) queryParams.set("category", effectiveFilters.category);
   if (effectiveFilters.city) queryParams.set("city", effectiveFilters.city);
   if (effectiveFilters.sort) queryParams.set("sort", effectiveFilters.sort);
-  if (effectiveFilters.minPrice) queryParams.set("minPrice", effectiveFilters.minPrice.toString());
-  if (effectiveFilters.maxPrice) queryParams.set("maxPrice", effectiveFilters.maxPrice.toString());
+  if (effectiveFilters.priceRange) queryParams.set("priceRange", effectiveFilters.priceRange);
 
   const queryString = queryParams.toString();
   const url = `${api.listings.list.path}${queryString ? `?${queryString}` : ""}`;

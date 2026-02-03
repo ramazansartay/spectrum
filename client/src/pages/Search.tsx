@@ -28,8 +28,7 @@ export default function SearchPage() {
     category: filters.category === "all" ? undefined : filters.category,
     city: filters.city === "all" ? undefined : filters.city,
     sort: filters.sort,
-    minPrice: filters.priceRange[0],
-    maxPrice: filters.priceRange[1]
+    priceRange: `${filters.priceRange[0]}-${filters.priceRange[1]}`
   });
 
   // Update filters when URL changes
