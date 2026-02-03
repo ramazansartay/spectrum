@@ -1,47 +1,34 @@
-
-import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
-import {
-  listings as listingsSchema,
-  insertListingSchema,
-} from '../shared/models/listings';
-import { users as usersSchema, UpsertUser } from '../shared/models/auth';
-import { eq } from 'drizzle-orm';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import * as schema from './schema';
+import { Listing } from './schema';
 import config from './config';
 
-// Унифицированное подключение с использованием postgres.js
-const client = postgres(config.database.url, { ssl: 'require' });
-const db = drizzle(client);
+const client = postgres(config.databaseUrl, { ssl: 'require' });
+const db = drizzle(client, { schema });
 
 export class DatabaseStorage {
-  async getUserByEmail(email: string): Promise<UpsertUser | undefined> {
-    return await db.query.usersSchema.findFirst({
-      where: eq(usersSchema.email, email),
+  async getListings() {
+    return db.query.listings.findMany({
+      with: {
+        seller: true,
+      },
     });
   }
 
-  async getUserById(id: string): Promise<any> {
-    return await db.query.usersSchema.findFirst({
-      where: eq(usersSchema.id, id),
+  async getListing(id: number) {
+    return db.query.listings.findFirst({
+      where: (listings, { eq }) => eq(listings.id, id),
+      with: {
+        seller: true,
+      },
     });
   }
 
-  async getListings(search?: string): Promise<any[]> {
-    if (search) {
-      return await db
-        .select()
-        .from(listingsSchema)
-        .where(eq(listingsSchema.title, search));
-    }
-    return await db.select().from(listingsSchema);
-  }
-
-  async createListing(listing: any): Promise<any> {
-    const newListing = insertListingSchema.parse(listing);
-    return await db.insert(listingsSchema).values(newListing).returning();
-  }
-
-  async createUser(user: UpsertUser): Promise<any> {
-    return await db.insert(usersSchema).values(user).returning();
+  async createListing(listing: Listing) {
+    const result = await db.insert(schema.listings).values(listing).returning();
+    return result[0];
   }
 }
+
+export const storage = new DatabaseStorage();
