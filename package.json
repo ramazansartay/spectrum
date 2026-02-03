@@ -3,13 +3,14 @@
   "version": "1.0.0",
   "type": "module",
   "license": "MIT",
-  "main": "dist/server/index.js",
+  "main": "dist/server/server/index.js",
   "scripts": {
     "dev": "NODE_ENV=development tsx server/index.ts",
-    "build": "npm run build:client && npm run build:server",
+    "clean": "rm -rf dist",
+    "build": "npm run clean && npm run build:client && npm run build:server",
     "build:client": "vite build",
     "build:server": "tsc -p tsconfig.server.json",
-    "start": "NODE_ENV=production node dist/server/index.js",
+    "start": "NODE_ENV=production node dist/server/server/index.js",
     "check": "tsc --noEmit"
   },
   "engines": {
