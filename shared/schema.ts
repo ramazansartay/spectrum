@@ -1,7 +1,7 @@
 import { pgTable, text, serial, timestamp, varchar } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
-import { users } from "./models/auth";
+import { users } from "./models/auth.js";
 
 export const listings = pgTable("listings", {
   id: serial("id").primaryKey(),
@@ -29,4 +29,4 @@ export type InsertListing = z.infer<typeof insertListingSchema>;
 export type InsertUser = z.infer<typeof insertUserSchema>;
 
 export { users };
-export type { User } from "./models/auth";
+export type { User } from "./models/auth.js";

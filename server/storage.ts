@@ -1,8 +1,8 @@
 import postgres from 'postgres';
 import { drizzle } from 'drizzle-orm/postgres-js';
-import * as schema from './schema';
-import { Listing } from './schema';
-import config from './config';
+import * as schema from './schema.js';
+import { Listing } from './schema.js';
+import config from './config.js';
 
 const client = postgres(config.databaseUrl, { ssl: 'require' });
 const db = drizzle(client, { schema });
