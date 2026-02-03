@@ -27,7 +27,9 @@ export const listings = pgTable('listings', {
 });
 
 export const selectListingsSchema = createSelectSchema(listings);
-export const insertListingsSchema = createInsertSchema(listings);
+export const insertListingSchema = createInsertSchema(listings);
+export const selectUserSchema = createSelectSchema(users);
+export const insertUserSchema = createInsertSchema(users);
 
 export type Listing = z.infer<typeof selectListingsSchema>;
-export type NewListing = z.infer<typeof insertListingsSchema>;
+export type NewListing = z.infer<typeof insertListingSchema>;
