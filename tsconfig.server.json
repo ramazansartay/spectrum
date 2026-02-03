@@ -1,12 +1,14 @@
 {
   "compilerOptions": {
-    "module": "NodeNext",
+    "module": "ESNext",
     "moduleResolution": "NodeNext",
     "target": "esnext",
     "outDir": "dist/server",
     "strict": true,
     "esModuleInterop": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "allowJs": true,
+    "sourceMap": true
   },
   "include": ["server/**/*.ts", "shared/**/*.ts"]
 }
