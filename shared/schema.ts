@@ -1,32 +1,33 @@
-import { pgTable, text, serial, timestamp, varchar } from "drizzle-orm/pg-core";
-import { createInsertSchema } from "drizzle-zod";
-import { z } from "zod";
-import { users } from "./models/auth.js";
+import { pgTable, varchar, serial, text, pgEnum, jsonb, timestamp } from 'drizzle-orm/pg-core';
+import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
+import { z } from 'zod';
 
-export const listings = pgTable("listings", {
-  id: serial("id").primaryKey(),
-  title: text("title").notNull(),
-  description: text("description").notNull(),
-  price: text("price").notNull(),
-  category: text("category").notNull(),
-  location: text("location").notNull(),
-  contactInfo: text("contact_info"),
-  images: text("images").array(),
-  userId: varchar("user_id").references(() => users.id),
-  createdAt: timestamp("created_at").defaultNow(),
+export const users = pgTable('users', {
+  id: varchar('id', { length: 255 }).primaryKey(),
+  email: varchar('email', { length: 255 }).notNull(),
+  name: varchar('name', { length: 255 }).notNull(),
+  hashedPassword: text('hashed_password'),
+  avatarUrl: text('avatar_url'),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
 });
 
-export const insertListingSchema = createInsertSchema(listings).omit({ 
-  id: true, 
-  createdAt: true,
-  userId: true 
+export const listings = pgTable('listings', {
+  id: serial('id').primaryKey(),
+  sellerId: varchar('seller_id', { length: 255 })
+    .notNull()
+    .references(() => users.id),
+  title: varchar('title', { length: 256 }).notNull(),
+  description: text('description').notNull(),
+  price: varchar('price', { length: 256 }).notNull(),
+  category: varchar('category', { length: 256 }).notNull(),
+  location: varchar('location', { length: 256 }).notNull(),
+  contactInfo: text('contact_info'),
+  images: jsonb('images'),
 });
 
-export const insertUserSchema = createInsertSchema(users);
+export const selectListingsSchema = createSelectSchema(listings);
+export const insertListingsSchema = createInsertSchema(listings);
 
-export type Listing = typeof listings.$inferSelect;
-export type InsertListing = z.infer<typeof insertListingSchema>;
-export type InsertUser = z.infer<typeof insertUserSchema>;
-
-export { users };
-export type { User } from "./models/auth.js";
+export type Listing = z.infer<typeof selectListingsSchema>;
+export type NewListing = z.infer<typeof insertListingsSchema>;
