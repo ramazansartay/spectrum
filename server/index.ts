@@ -1,10 +1,10 @@
 import express from 'express';
 import http from 'http';
-import { init as initSocket } from './socket.js';
-import { logger } from './logger.js';
-import { api } from './routes.js';
-import { auth } from './auth.js';
-import config from './config.js';
+import { init as initSocket } from './socket';
+import { logger } from './logger';
+import { api } from './routes';
+import { auth } from './auth';
+import config from './config';
 
 const app = express();
 const server = http.createServer(app);
