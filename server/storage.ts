@@ -7,9 +7,10 @@ import {
 } from '../shared/models/listings';
 import { users as usersSchema, UpsertUser } from '../shared/models/auth';
 import { eq } from 'drizzle-orm';
+import config from './config';
 
 const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
+    connectionString: config.database.url,
     ssl: {
         rejectUnauthorized: false,
     },

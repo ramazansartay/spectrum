@@ -1,23 +1,25 @@
-import 'dotenv/config';
 import express from 'express';
-import { createServer } from 'http';
-import { setupStatic } from './static.js';
+import http from 'http';
+import { init as initSocket } from './socket';
+import { logger } from './logger';
+import { api } from './routes';
+import { auth } from './auth';
+import config from './config';
 
 const app = express();
-const httpServer = createServer(app);
+const server = http.createServer(app);
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+initSocket(server);
 
-if (process.env.NODE_ENV === 'production') {
-  setupStatic(app);
-} else {
-  console.log('Development mode');
-}
+app.use(express.static('dist/client'));
+app.use(logger);
+app.use(auth);
+app.use('/api', api);
 
-const port = parseInt(process.env.PORT || '5000', 10);
-const host = '0.0.0.0';
+const { port } = {
+  port: process.env.PORT || 10000,
+};
 
-httpServer.listen(port, host, () => {
-  console.log(`serving on port ${port}`);
+server.listen(port, () => {
+  console.log(`Attempting to listen on 0.0.0.0:${port}`);
 });
