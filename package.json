@@ -11,7 +11,7 @@
     "build:server": "tsc -p tsconfig.server.json",
     "start": "NODE_ENV=production node dist/server/index.js",
     "check": "tsc --noEmit",
-    "db:push": "drizzle-kit push:pg"
+    "db:push": "drizzle-kit up:pg"
   },
   "engines": {
     "node": "20.11.0"
