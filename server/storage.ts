@@ -1,6 +1,6 @@
 
-import { drizzle } from 'drizzle-orm/node-postgres';
-import { Pool } from 'pg';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import postgres from 'postgres';
 import {
   listings as listingsSchema,
   insertListingSchema,
@@ -9,14 +9,9 @@ import { users as usersSchema, UpsertUser } from '../shared/models/auth';
 import { eq } from 'drizzle-orm';
 import config from './config';
 
-const pool = new Pool({
-    connectionString: config.database.url,
-    ssl: {
-        rejectUnauthorized: false,
-    },
-});
-
-const db = drizzle(pool);
+// Унифицированное подключение с использованием postgres.js
+const client = postgres(config.database.url, { ssl: 'require' });
+const db = drizzle(client);
 
 export class DatabaseStorage {
   async getUserByEmail(email: string): Promise<UpsertUser | undefined> {
