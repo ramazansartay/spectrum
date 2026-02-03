@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useLocation } from "wouter";
+import { useLocation, Link } from "wouter";
 import { Filter, X } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
@@ -12,7 +12,7 @@ import { useListings } from "@/hooks/use-listings";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function SearchPage() {
-  const [location] = useLocation();
+  const [location, setLocation] = useLocation();
   const searchParams = new URLSearchParams(window.location.search);
   
   const [filters, setFilters] = useState({
@@ -31,7 +31,13 @@ export default function SearchPage() {
     priceRange: `${filters.priceRange[0]}-${filters.priceRange[1]}`
   });
 
-  // Update filters when URL changes
+  const updateUrl = (newFilters) => {
+    const params = new URLSearchParams();
+    if (newFilters.search) params.set("q", newFilters.search);
+    if (newFilters.category && newFilters.category !== "all") params.set("category", newFilters.category);
+    setLocation(`${location.split("?")[0]}?${params.toString()}`);
+  };
+
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     setFilters(prev => ({
@@ -41,13 +47,19 @@ export default function SearchPage() {
     }));
   }, [location]);
 
+  const handleFilterChange = (field, value) => {
+    const newFilters = { ...filters, [field]: value };
+    setFilters(newFilters);
+    updateUrl(newFilters);
+  };
+
   const FilterPanel = () => (
     <div className="space-y-6">
       <div>
         <h3 className="text-sm font-semibold text-gray-900 mb-3">Category</h3>
         <Select 
           value={filters.category} 
-          onValueChange={(val) => setFilters(prev => ({ ...prev, category: val }))}
+          onValueChange={(val) => handleFilterChange("category", val)}
         >
           <SelectTrigger className="w-full bg-white">
             <SelectValue placeholder="All Categories" />
@@ -71,7 +83,7 @@ export default function SearchPage() {
         <h3 className="text-sm font-semibold text-gray-900 mb-3">City</h3>
         <Select 
           value={filters.city} 
-          onValueChange={(val) => setFilters(prev => ({ ...prev, city: val }))}
+          onValueChange={(val) => handleFilterChange("city", val)}
         >
           <SelectTrigger className="w-full bg-white">
             <SelectValue placeholder="All Cities" />
@@ -98,7 +110,7 @@ export default function SearchPage() {
           max={500000}
           step={1000}
           value={filters.priceRange}
-          onValueChange={(val) => setFilters(prev => ({ ...prev, priceRange: val }))}
+          onValueChange={(val) => handleFilterChange("priceRange", val)}
           className="my-4"
         />
       </div>
@@ -107,7 +119,7 @@ export default function SearchPage() {
         <h3 className="text-sm font-semibold text-gray-900 mb-3">Sort By</h3>
         <Select 
           value={filters.sort} 
-          onValueChange={(val) => setFilters(prev => ({ ...prev, sort: val }))}
+          onValueChange={(val) => handleFilterChange("sort", val)}
         >
           <SelectTrigger className="w-full bg-white">
             <SelectValue />
@@ -123,13 +135,17 @@ export default function SearchPage() {
       <Button 
         variant="outline" 
         className="w-full text-red-500 hover:text-red-600 hover:bg-red-50"
-        onClick={() => setFilters({
-          search: "",
-          category: "all",
-          city: "all",
-          sort: "recent",
-          priceRange: [0, 500000]
-        })}
+        onClick={() => {
+          const newFilters = {
+            search: "",
+            category: "all",
+            city: "all",
+            sort: "recent",
+            priceRange: [0, 500000]
+          };
+          setFilters(newFilters);
+          updateUrl(newFilters);
+        }}
       >
         Reset Filters
       </Button>
@@ -146,7 +162,7 @@ export default function SearchPage() {
             <Input 
               placeholder="Search" 
               value={filters.search}
-              onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
+              onChange={(e) => handleFilterChange("search", e.target.value)}
               className="pl-10 h-12 text-lg bg-white shadow-sm border-gray-200"
             />
             <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
@@ -188,7 +204,7 @@ export default function SearchPage() {
                   {filters.category}
                   <X 
                     className="w-4 h-4 cursor-pointer hover:text-primary/70" 
-                    onClick={() => setFilters(prev => ({ ...prev, category: "all" }))}
+                    onClick={() => handleFilterChange("category", "all")}
                   />
                 </div>
               )}
@@ -209,7 +225,7 @@ export default function SearchPage() {
             ) : (
               <div className="text-center py-20 bg-white rounded-xl border border-dashed border-gray-300">
                 <p className="text-lg text-gray-500 mb-4">No listings match your search.</p>
-                <Button variant="outline" onClick={() => setFilters(prev => ({ ...prev, category: "all", search: "" }))}>
+                <Button variant="outline" onClick={() => handleFilterChange("category", "all")}>
                   Clear Search
                 </Button>
               </div>
