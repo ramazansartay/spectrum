@@ -31,5 +31,5 @@ export const insertListingSchema = createInsertSchema(listings);
 export const selectUserSchema = createSelectSchema(users);
 export const insertUserSchema = createInsertSchema(users);
 
-export type Listing = z.infer<typeof selectListingsSchema>;
-export type NewListing = z.infer<typeof insertListingSchema>;
+export type Listing = typeof listings.$inferSelect;
+export type NewListing = typeof listings.$inferInsert;

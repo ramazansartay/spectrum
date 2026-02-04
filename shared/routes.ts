@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { insertListingSchema, listings, users, insertUserSchema } from './schema';
+import { insertListingSchema, listings, users, insertUserSchema } from './schema.js';
 
 export const api = {
   listings: {

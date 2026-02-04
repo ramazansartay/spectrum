@@ -1,20 +1,20 @@
 import express from 'express';
 import http from 'http';
-import { init as initSocket } from './socket';
-import { logger } from './logger';
-import { api } from './routes';
-import { auth } from './auth';
-import config from './config';
+import { init as initSocket } from './socket.js';
+import { logger } from './logger.js';
+import { api } from './routes.js';
+import { auth } from './auth.js';
+import config from './config.js';
 
 const app = express();
 const server = http.createServer(app);
 
 initSocket(server);
 
-app.use(express.json()); // Для парсинга JSON-тел запросов
+app.use(express.json());
 app.use(express.static('dist/client'));
 app.use(logger);
-app.use('/api', auth); // Подключаем маршруты аутентификации
+app.use('/api', auth);
 app.use('/api', api);
 
 const { port } = {

@@ -1,13 +1,14 @@
-
-import { Lucia, TimeSpan } from 'lucia';
+import { Lucia } from 'lucia';
 import { DrizzlePostgreSQLAdapter } from '@lucia-auth/adapter-drizzle';
 import { pgTable, varchar, timestamp } from 'drizzle-orm/pg-core';
-import { db } from './db'; // Предполагается, что db экспортируется из ./db
-import { users } from '../shared/schema';
+import { db } from './db.js';
+import { users } from '../shared/schema.js';
 import { GitHub } from 'arctic';
-import config from './config';
+import config from './config.js';
 import express from 'express';
 import bcrypt from 'bcryptjs';
+import { generateId } from 'oslo/crypto';
+import { eq } from 'drizzle-orm';
 
 const router = express.Router();
 
@@ -38,7 +39,6 @@ export const github = new GitHub(
     config.oauth.github.clientSecret
 );
 
-// Регистрация
 router.post('/signup', async (req, res) => {
     const { email, password, name } = req.body;
 
@@ -47,7 +47,7 @@ router.post('/signup', async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const userId = generateId(15); // Замените на вашу функцию генерации ID
+    const userId = generateId(15);
 
     try {
         await db.insert(users).values({
@@ -61,12 +61,10 @@ router.post('/signup', async (req, res) => {
         res.appendHeader('Set-Cookie', lucia.createSessionCookie(session.id).serialize());
         return res.status(201).json({ message: 'User created' });
     } catch (error) {
-        // Обработка ошибки, если пользователь уже существует
         return res.status(409).json({ message: 'User already exists' });
     }
 });
 
-// Вход
 router.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
@@ -74,7 +72,7 @@ router.post('/login', async (req, res) => {
         return res.status(400).json({ message: 'Email and password are required' });
     }
 
-    const existingUser = await db.query.users.findFirst({ where: (users, { eq }) => eq(users.email, email) });
+    const existingUser = await db.query.users.findFirst({ where: eq(users.email, email) });
 
     if (!existingUser || !existingUser.hashedPassword) {
         return res.status(401).json({ message: 'Invalid credentials' });
@@ -91,25 +89,14 @@ router.post('/login', async (req, res) => {
     return res.status(200).json({ message: 'Logged in' });
 });
 
-// Выход
 router.post('/logout', async (req, res) => {
-    const sessionId = req.headers.cookie?.split('=')[1]; // Упрощенный парсинг cookie
-    if (sessionId) {
-        await lucia.invalidateSession(sessionId);
+    if (res.locals.session) {
+        await lucia.invalidateSession(res.locals.session.id);
     }
     res.appendHeader('Set-Cookie', lucia.createBlankSessionCookie().serialize());
     return res.status(200).json({ message: 'Logged out' });
 });
 
-function generateId(length: number) {
-    let result = '';
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    const charactersLength = characters.length;
-    for (let i = 0; i < length; i++) {
-        result += characters.charAt(Math.floor(Math.random() * charactersLength));
-    }
-    return result;
-}
 
 export const auth = router;
 
