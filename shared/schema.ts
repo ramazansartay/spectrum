@@ -1,4 +1,4 @@
-import { pgTable, varchar, serial, text, pgEnum, jsonb, timestamp } from 'drizzle-orm/pg-core';
+import { pgTable, varchar, serial, text, pgEnum, jsonb, timestamp, index } from 'drizzle-orm/pg-core';
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
 
@@ -11,6 +11,18 @@ export const users = pgTable('users', {
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 });
+
+export const sessions = pgTable(
+  "sessions",
+  {
+    sid: varchar("sid").primaryKey(),
+    sess: jsonb("sess").notNull(),
+    expire: timestamp("expire").notNull(),
+  },
+  (table) => ({
+    expireIndex: index("IDX_session_expire").on(table.expire),
+  })
+);
 
 export const listings = pgTable('listings', {
   id: serial('id').primaryKey(),

@@ -1,22 +1,17 @@
 import { Lucia } from 'lucia';
 import { DrizzlePostgreSQLAdapter } from '@lucia-auth/adapter-drizzle';
-import { pgTable, varchar, timestamp } from 'drizzle-orm/pg-core';
-import { db } from './db.js';
-import { users } from '../shared/schema.js';
+import { db } from './db';
+import { users, sessions } from '../shared/schema';
 import { GitHub } from 'arctic';
-import config from './config.js';
+import config from './config';
 import express from 'express';
 import bcrypt from 'bcryptjs';
-import { generateId } from 'oslo/crypto';
+import { randomBytes } from 'crypto';
 import { eq } from 'drizzle-orm';
 
 const router = express.Router();
 
-const adapter = new DrizzlePostgreSQLAdapter(db, pgTable('sessions', {
-    id: varchar('id', { length: 255 }).primaryKey(),
-    userId: varchar('user_id', { length: 255 }).notNull().references(() => users.id),
-    expiresAt: timestamp('expires_at', { withTimezone: true, mode: 'date' }).notNull(),
-}), users);
+const adapter = new DrizzlePostgreSQLAdapter(db as any, sessions, users);
 
 export const lucia = new Lucia(adapter, {
     sessionCookie: {
@@ -47,7 +42,7 @@ router.post('/signup', async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const userId = generateId(15);
+    const userId = randomBytes(8).toString('hex');
 
     try {
         await db.insert(users).values({
