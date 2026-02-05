@@ -1,32 +1,29 @@
-import { pgTable, varchar, serial, text, pgEnum, jsonb, timestamp, index } from 'drizzle-orm/pg-core';
+import { pgTable, varchar, text, timestamp, index, integer } from 'drizzle-orm/pg-core';
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
 
 export const users = pgTable('users', {
-  id: varchar('id', { length: 255 }).primaryKey(),
-  email: varchar('email', { length: 255 }).notNull(),
+  id: text('id').primaryKey(), // Lucia ожидает text для id
+  email: varchar('email', { length: 255 }).notNull().unique(),
   name: varchar('name', { length: 255 }).notNull(),
   hashedPassword: text('hashed_password'),
   avatarUrl: text('avatar_url'),
+  githubId: text("github_id").unique(),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 });
 
-export const sessions = pgTable(
-  "sessions",
-  {
-    sid: varchar("sid").primaryKey(),
-    sess: jsonb("sess").notNull(),
-    expire: timestamp("expire").notNull(),
-  },
-  (table) => ({
-    expireIndex: index("IDX_session_expire").on(table.expire),
-  })
-);
+export const sessions = pgTable("sessions", {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+        .notNull()
+        .references(() => users.id),
+    expiresAt: timestamp("expires_at", { withTimezone: true, mode: 'date' }).notNull(),
+});
 
 export const listings = pgTable('listings', {
-  id: serial('id').primaryKey(),
-  sellerId: varchar('seller_id', { length: 255 })
+  id: integer('id').primaryKey(),
+  sellerId: text('seller_id')
     .notNull()
     .references(() => users.id),
   title: varchar('title', { length: 256 }).notNull(),
@@ -35,7 +32,7 @@ export const listings = pgTable('listings', {
   category: varchar('category', { length: 256 }).notNull(),
   location: varchar('location', { length: 256 }).notNull(),
   contactInfo: text('contact_info'),
-  images: jsonb('images'),
+  images: text('images').array(),
 });
 
 export const selectListingsSchema = createSelectSchema(listings);

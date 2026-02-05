@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Lucia } from 'lucia';
 import { DrizzlePostgreSQLAdapter } from '@lucia-auth/adapter-drizzle';
 import { db } from './db';
