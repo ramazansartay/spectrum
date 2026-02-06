@@ -19,7 +19,7 @@ app.use('/api', auth);
 app.use('/api', api);
 
 // Обслуживание статических файлов из папки dist/public
-const publicPath = path.resolve(__dirname, '../public');
+const publicPath = path.resolve(__dirname, '../../public');
 app.use(express.static(publicPath));
 
 // Возвращаем index.html для всех остальных запросов
