@@ -6,13 +6,17 @@ import config from "./config";
 import { db } from "./db";
 import { eq } from 'drizzle-orm';
 
-const s3 = new S3Client({
-    region: config.s3.region,
-    credentials: {
-        accessKeyId: config.s3.accessKeyId,
-        secretAccessKey: config.s3.secretAccessKey,
-    },
-});
+let s3: S3Client | null = null;
+
+if (config.s3 && config.s3.region && config.s3.credentials?.accessKeyId && config.s3.credentials?.secretAccessKey) {
+    s3 = new S3Client({
+        region: config.s3.region,
+        credentials: {
+            accessKeyId: config.s3.credentials.accessKeyId,
+            secretAccessKey: config.s3.credentials.secretAccessKey,
+        },
+    });
+}
 
 export async function getListings() {
     return db.select().from(listings);
@@ -23,6 +27,9 @@ export async function getListing(id: number) {
 }
 
 export async function createListing(listing: NewListing) {
+    if (!s3) {
+        throw new Error("S3 client is not initialized");
+    }
     const result = await db.insert(listings).values(listing).returning();
     return result[0];
 }
