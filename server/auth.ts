@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Lucia } from 'lucia';
 import { DrizzlePostgreSQLAdapter } from '@lucia-auth/adapter-drizzle';
 import { db } from './db';
@@ -12,7 +11,7 @@ import { eq } from 'drizzle-orm';
 
 const router = express.Router();
 
-const adapter = new DrizzlePostgreSQLAdapter(db as any, sessions, users);
+const adapter = new DrizzlePostgreSQLAdapter(db, sessions, users);
 
 export const lucia = new Lucia(adapter, {
     sessionCookie: {
@@ -26,6 +25,7 @@ export const lucia = new Lucia(adapter, {
             email: attributes.email,
             name: attributes.name,
             avatarUrl: attributes.avatarUrl,
+            hashedPassword: attributes.hashedPassword, // Добавлено
         };
     },
 });
@@ -170,6 +170,7 @@ declare module 'lucia' {
             email: string;
             name: string;
             avatarUrl: string | null;
+            hashedPassword: string | null; // Добавлено
         };
     }
 }
