@@ -1,6 +1,6 @@
 import express from 'express';
 import http from 'http';
-import path from 'path'; // Импортируем 'path'
+import path from 'path';
 import { init as initSocket } from './socket';
 import { logger } from './logger';
 import { api } from './routes';
@@ -10,25 +10,21 @@ import config from './config';
 const app = express();
 const server = http.createServer(app);
 
-// Инициализация сокетов
 initSocket(server);
 
-// Middleware для парсинга JSON
 app.use(express.json());
 
-// Middleware для логирования и API-маршрутов
 app.use(logger);
 app.use('/api', auth);
 app.use('/api', api);
 
-// Обслуживание статических файлов из сборки React
-const clientBuildPath = path.resolve(__dirname, '../client');
-app.use(express.static(clientBuildPath));
+// Обслуживание статических файлов из папки dist/public
+const publicPath = path.resolve(__dirname, '../public');
+app.use(express.static(publicPath));
 
-// Обработчик "catchall": для любого запроса, который не совпал с маршрутами выше,
-// отправляем основной файл index.html вашего React-приложения.
+// Возвращаем index.html для всех остальных запросов
 app.get('*', (req, res) => {
-  res.sendFile(path.resolve(clientBuildPath, 'index.html'));
+  res.sendFile(path.resolve(publicPath, 'index.html'));
 });
 
 const { port } = {
