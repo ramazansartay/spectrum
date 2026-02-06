@@ -6,7 +6,7 @@ import { logger } from './logger.js';
 import { api } from './routes.js';
 import { auth, lucia } from './auth.js'; // Импортируем lucia
 import config from './config.js';
-import './types'; // Импортируем типы
+// import './types'; // Импорт удален, так как он вызывает ошибку выполнения
 
 const app = express();
 const server = http.createServer(app);
