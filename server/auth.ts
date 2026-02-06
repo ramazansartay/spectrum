@@ -35,6 +35,72 @@ export const github = new GitHub(
     config.oauth.github.clientSecret
 );
 
+// --- НОВЫЕ МАРШРУТЫ ДЛЯ GITHUB ---
+
+router.get('/github', async (req, res) => {
+    const state = randomBytes(8).toString('hex');
+    const url = await github.createAuthorizationURL(state, {
+        scopes: ['user:email'],
+    });
+    res.cookie('github_oauth_state', state, {
+        path: '/',
+        httpOnly: true,
+        maxAge: 60 * 10, // 10 минут
+    });
+    res.redirect(url.toString());
+});
+
+router.get('/github/callback', async (req, res) => {
+    const code = req.query.code as string;
+    const state = req.query.state as string;
+    const storedState = req.cookies.github_oauth_state;
+
+    if (!code || !state || !storedState || state !== storedState) {
+        return res.status(400).json({ message: 'Invalid state or code' });
+    }
+
+    try {
+        const tokens = await github.validateAuthorizationCode(code);
+        const githubUserResponse = await fetch('https://api.github.com/user', {
+            headers: {
+                Authorization: `Bearer ${tokens.accessToken}`,
+                'User-Agent': 'spectrum-app',
+            },
+        });
+        const githubUser = await githubUserResponse.json();
+
+        const existingUser = await db.query.users.findFirst({
+            where: eq(users.githubId, githubUser.id),
+        });
+
+        if (existingUser) {
+            const session = await lucia.createSession(existingUser.id, {});
+            res.appendHeader('Set-Cookie', lucia.createSessionCookie(session.id).serialize());
+            return res.redirect('/profile');
+        }
+
+        const userId = randomBytes(8).toString('hex');
+        await db.insert(users).values({
+            id: userId,
+            githubId: githubUser.id,
+            name: githubUser.name,
+            email: githubUser.email,
+            avatarUrl: githubUser.avatar_url,
+        });
+
+        const session = await lucia.createSession(userId, {});
+        res.appendHeader('Set-Cookie', lucia.createSessionCookie(session.id).serialize());
+        return res.redirect('/profile');
+
+    } catch (e) {
+        console.error(e);
+        return res.status(500).json({ message: 'Something went wrong' });
+    }
+});
+
+
+// --- СУЩЕСТВУЮЩИЕ МАРШРУТЫ ---
+
 router.post('/signup', async (req, res) => {
     const { email, password, name } = req.body;
 
