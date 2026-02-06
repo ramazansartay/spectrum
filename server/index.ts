@@ -18,11 +18,11 @@ app.use(logger);
 app.use('/api', auth);
 app.use('/api', api);
 
-// Обслуживание статических файлов из папки dist/public
-const publicPath = path.resolve(__dirname, '../../public');
+// Serve static files from the dist/public folder
+const publicPath = path.resolve(__dirname, '../../dist/public');
 app.use(express.static(publicPath));
 
-// Возвращаем index.html для всех остальных запросов
+// Return index.html for all other requests
 app.get('*', (req, res) => {
   res.sendFile(path.resolve(publicPath, 'index.html'));
 });
