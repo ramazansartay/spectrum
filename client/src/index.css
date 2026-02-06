@@ -33,9 +33,9 @@
 }
 
 @layer base {
-  /* * {
+  * {
     @apply border-border;
-  } */
+  }
   body {
     @apply bg-slate-50 text-foreground antialiased font-sans;
   }
