@@ -14,8 +14,7 @@
     "migrate:create": "npm run migrate create",
     "migrate:up": "npm run migrate up",
     "migrate:down": "npm run migrate down",
-    "build": "npm run build --workspace=client && tsc",
-    "postinstall": "npm install --workspace=client"
+    "build": "npm run build --workspace=client && tsc"
   },
   "keywords": ["express", "postgres", "neon", "jwt"],
   "author": "AI Agent",
