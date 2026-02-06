@@ -1,4 +1,4 @@
-import { Lucia } from 'lucia';
+ import { Lucia } from 'lucia';
 import { DrizzlePostgreSQLAdapter } from '@lucia-auth/adapter-drizzle';
 import { db } from './db.js';
 import { users, sessions } from '../shared/schema.js';

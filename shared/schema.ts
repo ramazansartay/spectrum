@@ -4,8 +4,8 @@ import { z } from 'zod';
 
 export const users = pgTable('users', {
   id: text('id').primaryKey(),
-  email: varchar('email', { length: 255 }).notNull().unique(),
-  name: varchar('name', { length: 255 }).notNull(),
+  email: varchar('email', { length: 255 }).unique(),
+  name: varchar('name', { length: 255 }),
   hashed_password: text('hashed_password'),
   avatar_url: text('avatar_url'),
   github_id: text("github_id").unique(),
