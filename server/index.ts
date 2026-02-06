@@ -23,9 +23,9 @@ const publicPath = path.resolve(__dirname, '../../public');
 app.use(express.static(publicPath));
 
 // Return index.html for all other requests
-app.get('*', (req, res) => {
-  res.sendFile(path.resolve(publicPath, 'index.html'));
-});
+// app.get('*', (req, res) => {
+//   res.sendFile(path.resolve(publicPath, 'index.html'));
+// });
 
 const { port } = {
   port: process.env.PORT || 3000,
