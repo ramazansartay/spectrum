@@ -65,7 +65,7 @@ export function SignupPage() {
                 <FormField
                   control={form.control}
                   name="name"
-                  render={({ field }) => (
+                  render={({ field }: { field: any }) => (
                     <FormItem>
                       <FormLabel>Name</FormLabel>
                       <FormControl>
@@ -78,7 +78,7 @@ export function SignupPage() {
                 <FormField
                   control={form.control}
                   name="email"
-                  render={({ field }) => (
+                  render={({ field }: { field: any }) => (
                     <FormItem>
                       <FormLabel>Email</FormLabel>
                       <FormControl>
@@ -91,7 +91,7 @@ export function SignupPage() {
                 <FormField
                   control={form.control}
                   name="password"
-                  render={({ field }) => (
+                  render={({ field }: { field: any }) => (
                     <FormItem>
                       <FormLabel>Password</FormLabel>
                       <FormControl>

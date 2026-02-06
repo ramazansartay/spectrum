@@ -1,9 +1,9 @@
 import { Lucia } from 'lucia';
 import { DrizzlePostgreSQLAdapter } from '@lucia-auth/adapter-drizzle';
-import { db } from './db';
-import { users, sessions } from '../shared/schema';
+import { db } from './db.js';
+import { users, sessions } from '../shared/schema.js';
 import { GitHub } from 'arctic';
-import config from './config';
+import config from './config.js';
 import express from 'express';
 import bcrypt from 'bcryptjs';
 import { randomBytes } from 'crypto';
@@ -24,8 +24,8 @@ export const lucia = new Lucia(adapter, {
             id: attributes.id,
             email: attributes.email,
             name: attributes.name,
-            avatarUrl: attributes.avatarUrl,
-            hashedPassword: attributes.hashedPassword, // Добавлено
+            avatar_url: attributes.avatar_url,
+            hashed_password: attributes.hashed_password, // Добавлено
         };
     },
 });
@@ -70,7 +70,7 @@ router.get('/github/callback', async (req, res) => {
         const githubUser = await githubUserResponse.json();
 
         const existingUser = await db.query.users.findFirst({
-            where: eq(users.githubId, githubUser.id),
+            where: eq(users.github_id, githubUser.id),
         });
 
         if (existingUser) {
@@ -82,10 +82,10 @@ router.get('/github/callback', async (req, res) => {
         const userId = randomBytes(8).toString('hex');
         await db.insert(users).values({
             id: userId,
-            githubId: githubUser.id,
+            github_id: githubUser.id,
             name: githubUser.name,
             email: githubUser.email,
-            avatarUrl: githubUser.avatar_url,
+            avatar_url: githubUser.avatar_url,
         });
 
         const session = await lucia.createSession(userId, {});
@@ -116,7 +116,7 @@ router.post('/signup', async (req, res) => {
             id: userId,
             email,
             name,
-            hashedPassword,
+            hashed_password: hashedPassword,
         });
 
         const session = await lucia.createSession(userId, {});
@@ -136,11 +136,11 @@ router.post('/login', async (req, res) => {
 
     const existingUser = await db.query.users.findFirst({ where: eq(users.email, email) });
 
-    if (!existingUser || !existingUser.hashedPassword) {
+    if (!existingUser || !existingUser.hashed_password) {
         return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    const isValidPassword = await bcrypt.compare(password, existingUser.hashedPassword);
+    const isValidPassword = await bcrypt.compare(password, existingUser.hashed_password);
 
     if (!isValidPassword) {
         return res.status(401).json({ message: 'Invalid credentials' });
@@ -169,8 +169,8 @@ declare module 'lucia' {
             id: string;
             email: string;
             name: string;
-            avatarUrl: string | null;
-            hashedPassword: string | null; // Добавлено
+            avatar_url: string | null;
+            hashed_password: string | null; // Добавлено
         };
     }
 }

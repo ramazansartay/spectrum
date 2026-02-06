@@ -1,11 +1,11 @@
 import express from 'express';
 import http from 'http';
 import path from 'path';
-import { init as initSocket } from './socket';
-import { logger } from './logger';
-import { api } from './routes';
-import { auth, lucia } from './auth'; // Импортируем lucia
-import config from './config';
+import { init as initSocket } from './socket.js';
+import { logger } from './logger.js';
+import { api } from './routes.js';
+import { auth, lucia } from './auth.js'; // Импортируем lucia
+import config from './config.js';
 import './types'; // Импортируем типы
 
 const app = express();

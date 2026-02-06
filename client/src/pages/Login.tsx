@@ -63,7 +63,7 @@ export function LoginPage() {
                 <FormField
                   control={form.control}
                   name="email"
-                  render={({ field }) => (
+                  render={({ field }: { field: any }) => (
                     <FormItem>
                       <FormLabel>Email</FormLabel>
                       <FormControl>
@@ -76,7 +76,7 @@ export function LoginPage() {
                 <FormField
                   control={form.control}
                   name="password"
-                  render={({ field }) => (
+                  render={({ field }: { field: any }) => (
                     <FormItem>
                       <FormLabel>Password</FormLabel>
                       <FormControl>
@@ -103,7 +103,7 @@ export function LoginPage() {
               </form>
             </Form>
             <p className="text-center text-sm text-gray-600 mt-6">
-              Don\'t have an account?{' '}
+              Don't have an account?{" "}
               <Link href="/signup" className="font-semibold text-primary hover:underline">
                 Sign up
               </Link>
