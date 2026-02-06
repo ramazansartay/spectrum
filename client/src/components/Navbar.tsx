@@ -65,7 +65,7 @@ export function Navbar() {
                   </Button>
                 </Link>
                 <Link href="/signup">
-                  <Button size="sm" className="bg-primary hover:bg-primary/90 text-white font-semibold shadow-lg shadow-primary/20">
+                  <Button size="sm" variant="outline" className="text-gray-300 hover:text-white border-gray-700 hover:bg-gray-800">
                     Sign Up
                   </Button>
                 </Link>
@@ -135,7 +135,7 @@ export function Navbar() {
                       <Button className="w-full" variant="outline">Log In</Button>
                     </Link>
                     <Link href="/signup" className="w-full" onClick={() => setIsOpen(false)}>
-                      <Button className="w-full">Sign Up</Button>
+                      <Button className="w-full" variant="outline">Sign Up</Button>
                     </Link>
                   </div>
                 )}
