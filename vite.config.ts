@@ -7,6 +7,6 @@ export default defineConfig({
   root: 'client',
   plugins: [react(), tsconfigPaths()],
   build: {
-    outDir: '../dist/client',
+    outDir: '../dist/public',
   },
 })
