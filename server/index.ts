@@ -18,8 +18,8 @@ app.use(logger);
 app.use('/api', auth);
 app.use('/api', api);
 
-// Correctly serve static files from the ../public folder
-const publicPath = path.resolve(__dirname, '../public');
+// Correctly serve static files from the ../../public folder
+const publicPath = path.resolve(__dirname, '../../public');
 app.use(express.static(publicPath));
 
 // Return index.html for all other requests
