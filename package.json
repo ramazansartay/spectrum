@@ -10,7 +10,8 @@
     "migrate": "node-pg-migrate -j js",
     "migrate:create": "npm run migrate create",
     "migrate:up": "npm run migrate up",
-    "migrate:down": "npm run migrate down"
+    "migrate:down": "npm run migrate down",
+    "build": "tsc"
   },
   "keywords": ["express", "postgres", "neon", "jwt"],
   "author": "AI Agent",
@@ -30,6 +31,7 @@
   "devDependencies": {
     "jest": "^29.7.0",
     "nodemon": "^3.0.2",
-    "supertest": "^6.3.3"
+    "supertest": "^6.3.3",
+    "typescript": "^5.3.3"
   }
 }
