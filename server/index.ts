@@ -1,62 +1,39 @@
 import express from 'express';
-import http from 'http';
 import path from 'path';
-import { init as initSocket } from './socket.js';
-import { logger } from './logger.js';
-import { api } from './routes.js';
-import { auth, lucia } from './auth.js';
-import config from './config.js';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import apiRoutes from './routes/index.js'; // Assuming you have a routes file
+
+dotenv.config();
 
 const app = express();
-const server = http.createServer(app);
+const port = process.env.PORT || 10000;
 
-initSocket(server);
-
+// Middleware
+app.use(cors());
 app.use(express.json());
 
-app.use(async (req, res, next) => {
-	const sessionId = lucia.readSessionCookie(req.headers.cookie ?? "");
-	if (!sessionId) {
-		res.locals.user = null;
-		res.locals.session = null;
-		return next();
-	}
+// API routes
+app.use('/api', apiRoutes);
 
-	const { session, user } = await lucia.validateSession(sessionId);
-	if (session && session.fresh) {
-		res.appendHeader("Set-Cookie", lucia.createSessionCookie(session.id).serialize());
-	}
-	if (!session) {
-		res.appendHeader("Set-Cookie", lucia.createBlankSessionCookie().serialize());
-	}
-	res.locals.session = session;
-	res.locals.user = user;
-	return next();
-});
-
-app.use(logger);
-app.use('/api', auth);
-app.use('/api', api);
-
+// Serve static files from the React app
 const projectRoot = process.cwd();
 const publicPath = path.join(projectRoot, 'dist/public');
 
 app.use(express.static(publicPath));
 
+// The "catchall" handler: for any request that doesn't
+// match one above, send back React's index.html file.
 app.get('*', (req, res) => {
   const indexPath = path.join(publicPath, 'index.html');
   res.sendFile(indexPath, (err) => {
-      if (err) {
-          console.error('Error sending file:', err);
-          res.status(500).send(err);
-      }
+    if (err) {
+      console.error('Error sending file:', err);
+      res.status(500).send('An error occurred while trying to serve the page.');
+    }
   });
 });
 
-const { port } = {
-  port: process.env.PORT || 10000,
-};
-
-server.listen(port, () => {
+app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });

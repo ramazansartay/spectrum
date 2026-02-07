@@ -9,4 +9,12 @@ export default defineConfig({
   build: {
     outDir: '../dist/public',
   },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:10000',
+        changeOrigin: true,
+      },
+    },
+  },
 })

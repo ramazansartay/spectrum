@@ -21,8 +21,10 @@
     "noFallthroughCasesInSwitch": true,
 
     /* Path aliases */
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@shared/*": ["../shared/*"]
     }
   },
   "include": ["src"],
