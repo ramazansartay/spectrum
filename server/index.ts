@@ -1,39 +1,59 @@
-import express from 'express';
-import path from 'path';
-import cors from 'cors';
+
+import express, { Express, Request, Response, NextFunction } from 'express';
 import dotenv from 'dotenv';
-import apiRoutes from './routes/index.js'; // Assuming you have a routes file
+import cookieParser from 'cookie-parser';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+import router from './routes/index.js';
+import { ApiError } from './errors/ApiError.js';
+import { lucia } from './auth.js';
 
 dotenv.config();
 
-const app = express();
-const port = process.env.PORT || 10000;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
-// Middleware
-app.use(cors());
+const app: Express = express();
+const port = process.env.PORT || 3000;
+
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
-// API routes
-app.use('/api', apiRoutes);
-
-// Serve static files from the React app
-const projectRoot = process.cwd();
-const publicPath = path.join(projectRoot, 'dist/public');
-
-app.use(express.static(publicPath));
-
-// The "catchall" handler: for any request that doesn't
-// match one above, send back React's index.html file.
-app.get('*', (req, res) => {
-  const indexPath = path.join(publicPath, 'index.html');
-  res.sendFile(indexPath, (err) => {
-    if (err) {
-      console.error('Error sending file:', err);
-      res.status(500).send('An error occurred while trying to serve the page.');
+app.use(async (req: Request, res: Response, next: NextFunction) => {
+    const sessionId = lucia.readSessionCookie(req.headers.cookie ?? "");
+    if (!sessionId) {
+        res.locals.user = null;
+        res.locals.session = null;
+        return next();
     }
-  });
+
+    const { session, user } = await lucia.validateSession(sessionId);
+
+    if (session && session.fresh) {
+        const sessionCookie = lucia.createSessionCookie(session.id);
+        res.cookie(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
+    }
+    if (!session) {
+        const sessionCookie = lucia.createBlankSessionCookie();
+        res.cookie(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
+    }
+    res.locals.session = session;
+    res.locals.user = user;
+    return next();
+});
+
+app.use('/api', router);
+app.use('/uploads', express.static(join(__dirname, '..', 'uploads')));
+
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+    if (err instanceof ApiError) {
+        return res.status(err.statusCode).json({ message: err.message });
+    }
+    console.error(err);
+    res.status(500).json({ message: 'Internal Server Error' });
 });
 
 app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+    console.log(`Server is running on port ${port}`);
 });
