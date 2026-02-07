@@ -3,13 +3,16 @@
   "version": "1.0.0",
   "description": "Production-ready backend for an Ads Platform",
   "type": "module",
+  "workspaces": [
+    "client"
+  ],
   "scripts": {
     "dev": "concurrently \"npm:dev:server\" \"npm:dev:client\"",
     "dev:server": "tsx --watch server/index.ts",
     "dev:client": "vite",
     "start": "node dist/server/index.js",
     "build": "npm run build:client && npm run build:server",
-    "build:client": "vite build",
+    "build:client": "npm run build --workspace=client",
     "build:server": "tsc -p tsconfig.server.json",
     "test": "jest --runInBand --forceExit",
     "db:generate": "drizzle-kit generate",
