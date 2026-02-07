@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
-import router from './routes/index.js';
+import { api } from '../shared/routes.js';
 import { ApiError } from './errors/ApiError.js';
 import { lucia } from './auth.js';
 
@@ -43,7 +43,7 @@ app.use(async (req: Request, res: Response, next: NextFunction) => {
     return next();
 });
 
-app.use('/api', router);
+app.use('/api', api);
 app.use('/uploads', express.static(join(__dirname, '..', 'uploads')));
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {

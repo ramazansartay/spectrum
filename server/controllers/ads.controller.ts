@@ -2,7 +2,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { validationResult } from 'express-validator';
 import { db } from '../db.js';
-import { ads, images } from '../../shared/schema.js';
+import { listings, images } from '../../shared/schema.js';
 import { eq, and } from 'drizzle-orm';
 import { ApiError } from '../errors/ApiError.js';
 
@@ -12,11 +12,15 @@ export const createAd = async (req: Request, res: Response, next: NextFunction) 
         return next(new ApiError(400, `Validation error: ${errors.array()[0].msg}`));
     }
 
+    if (!res.locals.user) {
+        return next(new ApiError(401, 'User not authenticated'));
+    }
+
     const { title, description, price, category } = req.body;
     const userId = res.locals.user.id;
 
     try {
-        const [newAd] = await db.insert(ads).values({ title, description, price, category, userId }).returning();
+        const [newAd] = await db.insert(listings).values({ title, description, price, category, userId }).returning();
         res.status(201).json(newAd);
     } catch (error) {
         next(error);
@@ -29,8 +33,8 @@ export const getAds = async (req: Request, res: Response, next: NextFunction) =>
     const offset = (page - 1) * limit;
 
     try {
-        const adList = await db.select().from(ads).orderBy(ads.createdAt).limit(limit).offset(offset);
-        const total = await db.select({ count: ads.id }).from(ads);
+        const adList = await db.select().from(listings).orderBy(listings.createdAt).limit(limit).offset(offset);
+        const total = await db.select({ count: listings.id }).from(listings);
 
         res.json({
             data: adList,
@@ -49,15 +53,18 @@ export const getAds = async (req: Request, res: Response, next: NextFunction) =>
 export const getAdById = async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
     try {
-        const [ad] = await db.select().from(ads).where(eq(ads.id, id));
+        const [ad] = await db.select().from(listings).where(eq(listings.id, id));
         if (!ad) {
             return next(new ApiError(404, 'Ad not found'));
         }
 
         const adImages = await db.select().from(images).where(eq(images.adId, id));
-        ad.images = adImages;
+        const adWithImages = {
+            ...ad,
+            images: adImages,
+        };
 
-        res.json(ad);
+        res.json(adWithImages);
     } catch (error) {
         next(error);
     }
@@ -65,12 +72,17 @@ export const getAdById = async (req: Request, res: Response, next: NextFunction)
 
 export const updateAd = async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
+
+    if (!res.locals.user) {
+        return next(new ApiError(401, 'User not authenticated'));
+    }
+
     const userId = res.locals.user.id;
 
     const { title, description, price, category } = req.body;
 
     try {
-        const [ad] = await db.select().from(ads).where(eq(ads.id, id));
+        const [ad] = await db.select().from(listings).where(eq(listings.id, id));
         if (!ad) {
             return next(new ApiError(404, 'Ad not found'));
         }
@@ -78,7 +90,7 @@ export const updateAd = async (req: Request, res: Response, next: NextFunction) 
             return next(new ApiError(403, 'User not authorized to update this ad'));
         }
 
-        const [updatedAd] = await db.update(ads).set({ title, description, price, category }).where(eq(ads.id, id)).returning();
+        const [updatedAd] = await db.update(listings).set({ title, description, price, category }).where(eq(listings.id, id)).returning();
 
         res.json(updatedAd);
     } catch (error) {
@@ -88,10 +100,15 @@ export const updateAd = async (req: Request, res: Response, next: NextFunction) 
 
 export const deleteAd = async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
+
+    if (!res.locals.user) {
+        return next(new ApiError(401, 'User not authenticated'));
+    }
+
     const userId = res.locals.user.id;
 
     try {
-        const [ad] = await db.select().from(ads).where(eq(ads.id, id));
+        const [ad] = await db.select().from(listings).where(eq(listings.id, id));
         if (!ad) {
             return next(new ApiError(404, 'Ad not found'));
         }
@@ -99,7 +116,7 @@ export const deleteAd = async (req: Request, res: Response, next: NextFunction) 
             return next(new ApiError(403, 'User not authorized to delete this ad'));
         }
 
-        await db.delete(ads).where(eq(ads.id, id));
+        await db.delete(listings).where(eq(listings.id, id));
         res.status(204).send();
     } catch (error) {
         next(error);
@@ -108,6 +125,11 @@ export const deleteAd = async (req: Request, res: Response, next: NextFunction) 
 
 export const uploadImage = async (req: Request, res: Response, next: NextFunction) => {
     const { id: adId } = req.params;
+
+    if (!res.locals.user) {
+        return next(new ApiError(401, 'User not authenticated'));
+    }
+
     const userId = res.locals.user.id;
 
     if (!req.file) {
@@ -115,7 +137,7 @@ export const uploadImage = async (req: Request, res: Response, next: NextFunctio
     }
 
     try {
-        const [ad] = await db.select().from(ads).where(eq(ads.id, adId));
+        const [ad] = await db.select().from(listings).where(eq(listings.id, adId));
         if (!ad) {
             return next(new ApiError(404, 'Ad not found'));
         }

@@ -6,6 +6,7 @@ import { db } from '../db.js';
 import { users } from '../../shared/schema.js';
 import { eq } from 'drizzle-orm';
 import { Argon2id } from 'oslo/password';
+import { generateId } from 'lucia';
 import { ApiError } from '../errors/ApiError.js';
 
 export const register = async (req: Request, res: Response, next: NextFunction) => {
@@ -23,8 +24,9 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
         }
 
         const hashedPassword = await new Argon2id().hash(password);
+        const userId = generateId(15);
 
-        const newUser = await db.insert(users).values({ email, passwordHash: hashedPassword, username }).returning({ id: users.id, email: users.email, username: users.username });
+        const newUser = await db.insert(users).values({ id: userId, email, passwordHash: hashedPassword, username }).returning({ id: users.id, email: users.email, username: users.username });
 
         const session = await lucia.createSession(newUser[0].id, {});
         const sessionCookie = lucia.createSessionCookie(session.id);

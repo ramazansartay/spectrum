@@ -11,3 +11,10 @@ export const validateLogin = [
     body('email').isEmail().withMessage('Enter a valid email'),
     body('password').notEmpty().withMessage('Password is required'),
 ];
+
+export const validateAd = [
+    body('title').notEmpty().withMessage('Title is required'),
+    body('description').notEmpty().withMessage('Description is required'),
+    body('price').isFloat({ gt: 0 }).withMessage('Price must be a positive number'),
+    body('category').notEmpty().withMessage('Category is required'),
+];

@@ -22,7 +22,7 @@ export async function getListings() {
     return db.select().from(listings);
 }
 
-export async function getListing(id: number) {
+export async function getListing(id: string) {
     return db.query.listings.findFirst({ where: eq(listings.id, id) });
 }
 
